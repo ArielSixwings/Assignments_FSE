@@ -76,33 +76,29 @@ bool eventHandler::stablishConnetion(){
 
 	unsigned int clientLength;
 	int socketCliente;
-
-	while(1) {
-		std::cout << "Listening" << std::endl;
-		clientLength = sizeof(this->clientAddr);
-		if((socketCliente = accept(this->serverSocket, (struct sockaddr *) &(this->clientAddr), &clientLength)) < 0){
-			std::cout << "Failed at accept" << std::endl;
-		}
-		
-		std::cout << "Connect to client %s"<< inet_ntoa(this->clientAddr.sin_addr) << std::endl;
-		
-		this->handleClient(socketCliente);
-		close(socketCliente);
-
+	
+	std::cout << "Listening" << std::endl;
+	clientLength = sizeof(this->clientAddr);
+	if((socketCliente = accept(this->serverSocket, (struct sockaddr *) &(this->clientAddr), &clientLength)) < 0){
+		std::cout << "Failed at accept" << std::endl;
+		return false;
 	}
+		
+	std::cout << "Connect to client %s"<< inet_ntoa(this->clientAddr.sin_addr) << std::endl;
+		
+	this->handleClient(socketCliente);
+	
+	close(socketCliente);
 	close(this->serverSocket);
+	return true;
 }
 
-void work(eventHandler theHandler){
-	theHandler.stablishConnetion();
-}
+// int main(){
 
-int main(){
+// 	eventHandler test(5,10,8000);
+// 	test.openServer();
 
-	eventHandler test(5,10,8000);
-	test.openServer();
-
-	std::thread Listener(work,test);
-	test.handleTime();
-	Listener.join();
-}
+// 	std::thread Listener(work,test);
+// 	test.handleTime();
+// 	Listener.join();
+// }

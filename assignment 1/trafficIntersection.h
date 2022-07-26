@@ -2,6 +2,7 @@
 #define TRAFFICINTERSECTION_H
 
 #include "semaphore.h"
+#include "eventHandler.h"
 #include <bits/stdc++.h>
 #include <sys/wait.h>
 

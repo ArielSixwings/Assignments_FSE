@@ -1,5 +1,8 @@
 #include "trafficIntersection.h"
 
+void work(eventHandler theHandler){
+	theHandler.stablishConnetion();
+}
 
 trafficIntersection::trafficIntersection(std::vector<semaphore> thestates,
 	int theminGreenTime,
@@ -32,10 +35,16 @@ void trafficIntersection::Print(){
 }
 
 void trafficIntersection::PrintInTime(){
+	
+	eventHandler timeManager(5,10,8000);
+	timeManager.openServer();
+
 
 	this->states[1].Print();
-
-	sleep(this->maxGreenTime);
+	
+	std::thread Listener(work,timeManager);
+	timeManager.handleTime();
+	// sleep(this->maxGreenTime);
 	
 	this->states[2].Print();
 	sleep(this->yellowTime);
@@ -46,10 +55,5 @@ void trafficIntersection::PrintInTime(){
 	this->states[5].Print();
 	sleep(this->yellowTime);
 	this->states[0].Print();
-}
-
-bool trafficIntersection::handleSignals(){
-	eventHandler signals(5,10,8000);
-	signals.openServer();
-	signals.stablishConnetion();
+	Listener.join();
 }
