@@ -7,9 +7,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <chrono>
+#include <thread>
+
+static int useTime;
 
 class eventHandler{
 	
+
 public:
 	unsigned short port;
 
@@ -23,11 +28,11 @@ public:
 
 	eventHandler(int theminTime, int themaxTime,int thePort);
 
-	bool stablishConnection();
+	bool openServer();
+	bool stablishConnetion();
 	void handleClient(int socketCliente);
-
+	void handleTime();
 	bool resetTimes();
-	bool handleTime();
 
 };
 

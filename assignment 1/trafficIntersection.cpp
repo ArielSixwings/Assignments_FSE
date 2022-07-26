@@ -32,8 +32,11 @@ void trafficIntersection::Print(){
 }
 
 void trafficIntersection::PrintInTime(){
+
 	this->states[1].Print();
-	sleep(this->minGreenTime);
+
+	sleep(this->maxGreenTime);
+	
 	this->states[2].Print();
 	sleep(this->yellowTime);
 	this->states[3].Print();
@@ -45,6 +48,8 @@ void trafficIntersection::PrintInTime(){
 	this->states[0].Print();
 }
 
-	// void flashingAmber(){
-
-	// }
+bool trafficIntersection::handleSignals(){
+	eventHandler signals(5,10,8000);
+	signals.openServer();
+	signals.stablishConnetion();
+}
