@@ -1,5 +1,5 @@
 #include "semaphore.h"
-#include "trafficIntersection.h"
+#include "../includes/trafficIntersection.h"
 
 int main (void){
 	std::cout << "Trafic lights" << std::endl;

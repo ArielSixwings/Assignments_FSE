@@ -1,4 +1,4 @@
-#include "semaphore.h"
+#include "../includes/semaphore.h"
 
 semaphore::semaphore(int thelights[6]){
 	for (int i = 0; i < 6; ++i){
