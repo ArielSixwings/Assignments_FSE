@@ -8,7 +8,7 @@ class semaphore{
 public:
 	int lights[6];
 	
-	semaphore(int thelights[6]);	
+	semaphore(int thelights[6]);
 	void Print();
 
 };
