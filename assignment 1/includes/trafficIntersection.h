@@ -23,9 +23,9 @@ public:
 		int themaxRedTime,
 		int theyellowTime);
 
-	void Print();
-
-	void PrintInTime();
+	void print();
+	void printInTime();
+	void controlIntersection();
 
 };
 

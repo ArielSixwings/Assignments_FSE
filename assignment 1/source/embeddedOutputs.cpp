@@ -1,9 +1,7 @@
 #include "../includes/embeddedOutputs.h"
 
 embeddedOutputs::embeddedOutputs(){
-	//if (wiringPiSetup () == -1){
-	//	std::cout << "No setup" << std::endl; 
-	//	return 1;
+
 	this->pinMap[0] = 30;
 	this->pinMap[1] = 31;
 	this->pinMap[2] = 8;
@@ -36,16 +34,28 @@ embeddedOutputs::embeddedOutputs(){
 }
 
 bool embeddedOutputs::setOutput(int* pins){
-	// for (int i = 0; i < length(pins); ++i){
-	// 	pinMode (this->pinMap[pins[i]], OUTPUT);
-	// }
+	for (int i = 0; i < sizeof(pins)/sizeof(int); ++i){
+		pinMode (this->pinMap[pins[i]], OUTPUT);
+	}
+	return true;
+}
+
+bool embeddedOutputs::onOff(int groupIndex,int* states){
+	for (int i = 0; i < sizeof(states)/sizeof(int); ++i){
+		digitalWrite (this->pinMap[this->group[groupIndex][i]], states[i]);
+	}
 	return true;
 }
 
 void embeddedOutputs::printOutputs(){
-	for (int i = 0; i < 28; ++i)
-	{
+	for (int i = 0; i < 28; ++i){
 		std::cout << i << ": " << this->pinMap[i] << std::endl;
-
 	}
+}
+
+bool embeddedOutputs::setGroup(int groupIndex,int* pins){
+	for (int i = 0; i < 6; ++i){
+		this->group[groupIndex][i] = pins[i];
+	}
+	return true;
 }

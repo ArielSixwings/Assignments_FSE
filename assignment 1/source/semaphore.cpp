@@ -5,8 +5,7 @@ semaphore::semaphore(int thelights[6]){
 		lights[i] = thelights[i];
 	}
 }
-	
-// ~semaphore();
+
 
 void semaphore::Print(){
 	for (int i = 0; i < 6; ++i){
