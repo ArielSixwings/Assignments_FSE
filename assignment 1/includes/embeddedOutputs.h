@@ -5,10 +5,9 @@
 #include <wiringPi.h>
 #include <bits/stdc++.h>
 
-class embeddedOutputs{
+class embeddedOutputs : pinMap{
 	
 public:
-	int pinMap[28];
 	int* group;
 	int groupSize;
 	
