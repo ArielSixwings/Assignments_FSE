@@ -2,14 +2,17 @@
 #define SEMAPHORE_H
 
 #include <iostream>
+#include "embeddedOutputs.h"
 
 class semaphore{
 	
 public:
-	int lights[6];
+	int states[6];
+	embeddedOutputs lights;
 	
-	semaphore(int thelights[6]);
-	void Print();
+	semaphore(int theStates[6]);
+	// bool setLightsPins();
+	void print();
 
 };
 

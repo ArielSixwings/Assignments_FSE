@@ -25,7 +25,6 @@ public:
 
 	void print();
 	void printInTime();
-	void controlIntersection();
 
 };
 

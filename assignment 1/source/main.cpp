@@ -5,6 +5,8 @@
 int main (void){
 	std::cout << "Trafic lights" << std::endl;
 
+	wiringPiSetup();
+	
 	int conf1[6] = {0,0,1,0,0,1};
 	int conf2[6] = {1,0,0,0,0,1};
 	int conf3[6] = {0,1,0,0,0,1};
@@ -29,29 +31,9 @@ int main (void){
 	states.push_back(state5);
 	states.push_back(state6);
 	
-
-
-	int *pins = new int[12];
-
-	pins[0] = 1;
-	pins[1] = 2;
-	pins[2] = 3;
-	pins[3] = 26;
-	pins[4] = 21;
-	pins[5] = 11;
-	pins[6] = 20;
-	pins[7] = 0;
-	pins[8] = 16;
-	pins[9] = 5;
-	pins[10] = 12;
-	pins[11] = 6;
-
-	embeddedOutputs outputs;
-	outputs.printOutputs();
-	// outputs.setOutput(pins);
-
-	// trafficIntersection theIntersection(states,10,20,5,10,3);
+	trafficIntersection theIntersection(states,5,10,5,10,3);
 	// theIntersection.PrintInTime();
+	theIntersection.controlIntersection();
 }
 
 //ssh arielserafim@164.41.98.17

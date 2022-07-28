@@ -30,7 +30,6 @@ embeddedOutputs::embeddedOutputs(){
 	this->pinMap[25] = 6;
 	this->pinMap[26] = 25;
 	this->pinMap[27] = 2;
-
 }
 
 bool embeddedOutputs::setOutput(int* pins){
@@ -40,9 +39,17 @@ bool embeddedOutputs::setOutput(int* pins){
 	return true;
 }
 
+bool embeddedOutputs::setGroup(int* pins){
+	if (pins == NULL){
+		return false;
+	}
+	this->groups.push_back(pins);
+	return true;
+}
+
 bool embeddedOutputs::onOff(int groupIndex,int* states){
 	for (int i = 0; i < sizeof(states)/sizeof(int); ++i){
-		digitalWrite (this->pinMap[this->group[groupIndex][i]], states[i]);
+		digitalWrite (this->pinMap[this->groups[groupIndex][i]], states[i]);
 	}
 	return true;
 }
@@ -51,11 +58,4 @@ void embeddedOutputs::printOutputs(){
 	for (int i = 0; i < 28; ++i){
 		std::cout << i << ": " << this->pinMap[i] << std::endl;
 	}
-}
-
-bool embeddedOutputs::setGroup(int groupIndex,int* pins){
-	for (int i = 0; i < 6; ++i){
-		this->group[groupIndex][i] = pins[i];
-	}
-	return true;
 }

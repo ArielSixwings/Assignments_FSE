@@ -1,15 +1,15 @@
 #include "../includes/semaphore.h"
 
-semaphore::semaphore(int thelights[6]){
+semaphore::semaphore(int theStates[6]){
 	for (int i = 0; i < 6; ++i){
-		lights[i] = thelights[i];
+		states[i] = theStates[i];
 	}
 }
 
 
-void semaphore::Print(){
+void semaphore::print(){
 	for (int i = 0; i < 6; ++i){
-		std::cout << lights[i];
+		std::cout << states[i];
 	}
 	std::cout << std::endl;
 }
