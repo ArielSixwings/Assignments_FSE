@@ -11,9 +11,12 @@ public:
 	embeddedOutputs lights;
 	
 	semaphore();
-	bool setLightsPins(int pins[6]);
 	bool changeStates(int state);
+	void setDefaultGroup(int group);
 	void print();
+
+private:	
+	bool setLightsPins(int pins[6]);
 
 };
 

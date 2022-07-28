@@ -22,6 +22,14 @@ bool semaphore::setLightsPins(int pins[6]){
 	return true;
 }
 
+void semaphore::setDefaultGroup(int group){
+	if (group){
+		this->setLightsPins({1,26,21,20,16,12});
+		return;
+	}
+	this->setLightsPins({2,3,11,0,5,6});
+}
+
 void semaphore::print(){
 	for (int i = 0; i < 6; ++i){
 		std::cout << states[i];
@@ -34,7 +42,7 @@ bool semaphore::changeStates(int state){
 		std::cout << "invalid state" << std::endl:
 		return false;
 	}
-	
+
 	this->lights.onOff(this->states[state]);
 	return true
 }
