@@ -10,8 +10,9 @@ public:
 	int states[6];
 	embeddedOutputs lights;
 	
-	semaphore(int theStates[6]);
-	// bool setLightsPins();
+	semaphore();
+	bool setLightsPins(int pins[6]);
+	bool changeStates(int state);
 	void print();
 
 };

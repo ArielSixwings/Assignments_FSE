@@ -9,12 +9,13 @@ class embeddedOutputs{
 	
 public:
 	int pinMap[28];
-	std::vector<int*> groups;
+	int* group;
+	int groupSize;
 	
 	embeddedOutputs();
 	bool setOutput(int* pins);
 	bool setGroup(int* pins);
-	bool onOff(int groupIndex,int* states);
+	bool onOff(int* states);
 	void printOutputs();
 
 };

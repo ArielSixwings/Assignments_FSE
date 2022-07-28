@@ -43,13 +43,19 @@ bool embeddedOutputs::setGroup(int* pins){
 	if (pins == NULL){
 		return false;
 	}
-	this->groups.push_back(pins);
+	this->groups = pins;
+	this->groupSize = sizeof(this->groups)/sizeof(int);
 	return true;
 }
 
-bool embeddedOutputs::onOff(int groupIndex,int* states){
-	for (int i = 0; i < sizeof(states)/sizeof(int); ++i){
-		digitalWrite (this->pinMap[this->groups[groupIndex][i]], states[i]);
+bool embeddedOutputs::onOff(int* states){
+	int thesize = sizeof(states)/sizeof(int);
+
+	if (thesize != this->groupSize){
+		return false;
+	}
+	for (int i = 0; i < thesize; ++i){
+		digitalWrite (this->pinMap[this->groups[i]], states[i]);
 	}
 	return true;
 }
