@@ -1,13 +1,24 @@
 #include "../includes/semaphore.h"
 
 semaphore::semaphore(){
-	this->states[0] = {1,0,0,0,0,1}; //green 	red
-	this->states[1] = {0,1,0,0,0,1}; //yellow 	red
-	this->states[2] = {0,0,1,0,0,1}; //red 		red
-	this->states[3] = {0,0,1,1,0,0}; //red 		green
-	this->states[4] = {0,0,1,0,1,0}; //red 		yellow	
-	this->states[5] = {0,0,0,0,0,0}; //off 		off
-	this->states[0] = {0,0,0,0,0,0}; //yellow	yellow
+
+	int conf0[6] = {1,0,0,0,0,1}; //green 		red
+	int conf1[6] = {0,1,0,0,0,1}; //yellow 		red
+	int conf2[6] = {0,0,1,0,0,1}; //red 		red
+	int conf3[6] = {0,0,1,1,0,0}; //red 		green
+	int conf4[6] = {0,0,1,0,1,0}; //red 		yellow	
+	int conf5[6] = {0,0,0,0,0,0}; //off 		off
+	int conf6[6] = {0,1,0,0,1,0}; //yellow	yellow
+
+	for (int i = 0; i < 6; ++i){
+		this->states[0][i] = conf0[i];
+		this->states[1][i] = conf1[i];
+		this->states[2][i] = conf2[i];
+		this->states[3][i] = conf3[i];
+		this->states[4][i] = conf4[i];
+		this->states[5][i] = conf5[i];
+		this->states[6][i] = conf6[i];
+	}
 }
 
 bool semaphore::setLightsPins(int pins[6]){
@@ -24,10 +35,12 @@ bool semaphore::setLightsPins(int pins[6]){
 
 void semaphore::setDefaultGroup(int group){
 	if (group){
-		this->setLightsPins({1,26,21,20,16,12});
+		int pins[6] = {1,26,21,20,16,12};
+		this->setLightsPins(pins);
 		return;
 	}
-	this->setLightsPins({2,3,11,0,5,6});
+	int pins[6] = {2,3,11,0,5,6};
+	this->setLightsPins(pins);
 }
 
 void semaphore::print(){
@@ -38,11 +51,11 @@ void semaphore::print(){
 }
 
 bool semaphore::changeStates(int state){
-	if (state < 0 or state > 5){
-		std::cout << "invalid state" << std::endl:
+	if (state < 0 or state > 6){
+		std::cout << "invalid state" << std::endl;
 		return false;
 	}
 
 	this->lights.onOff(this->states[state]);
-	return true
+	return true;
 }

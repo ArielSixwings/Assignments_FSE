@@ -7,7 +7,7 @@
 class semaphore{
 	
 public:
-	int states[6];
+	int states[7][6];
 	embeddedOutputs lights;
 	
 	semaphore();

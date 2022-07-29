@@ -1,18 +1,13 @@
 #include "../includes/trafficIntersection.h"
 
-trafficIntersection::trafficIntersection(std::vector<semaphore> thestates,
-	int theminGreenTime,
-	int themaxGreenTime,
-	int theminRedTime,
-	int themaxRedTime,
-	int theyellowTime)
-	{
-		
-	this->states = thestates;
-		
-	int conf0[6] = {0,0,0,0,0,0};
-	semaphore state0(conf0);
+using namespace std::literals::chrono_literals;
 
+trafficIntersection::trafficIntersection(int theminGreenTime,
+										int themaxGreenTime,
+										int theminRedTime,
+										int themaxRedTime,
+										int theyellowTime)
+	{
 	this->minGreenTime = theminGreenTime;
 	this->maxGreenTime = themaxGreenTime;
 	this->minRedTime = theminRedTime;
@@ -22,31 +17,28 @@ trafficIntersection::trafficIntersection(std::vector<semaphore> thestates,
 	minTime = this->minGreenTime;
 	useTime = this->maxGreenTime;
 
-	this->buttonOne = this->pinMap[8];
-	this->buttonTwo = this->pinMap[8];
+	this->buttonOne = this->theMap[8];
+	this->buttonTwo = this->theMap[8];
 }
 
 void trafficIntersection::print(){
 	std::cout << "states" << std::endl;
-	for (int i = 0; i < states.size(); ++i){
-		this->states[i].Print();
-	}
-
 	std::cout << this->minGreenTime << "  " << this->maxGreenTime << std::endl;
 	std::cout << this->yellowTime << std::endl;
 	std::cout << this->minRedTime << "  " << this->maxRedTime << std::endl;
-}
-
-void trafficIntersection::listenButton(int pin){
-	wiringPiIRS(pin,INT_EDGE_RISING,changeTime);
 }
 
 void changeTime(){
 	useTime = minTime;
 }
 
+void trafficIntersection::listenButton(int pin){
+	wiringPiISR(pin,INT_EDGE_RISING,changeTime);
+}
+
+
 void trafficIntersection::manageTime(){
-	using namespace std::literals::chrono_literals;
+	
 
 	auto start = std::chrono::high_resolution_clock::now();
 	auto end = std::chrono::high_resolution_clock::now();
@@ -75,19 +67,23 @@ void trafficIntersection::controlIntersection(){
 		this->manageTime();
 		
 		this->theSemaphore.changeStates(1);//yellow 	red
-		sleep(this->yellowTime);
+		std::this_thread::sleep_for(1s);
+		// sleep(this->yellowTime);
 		
 		this->theSemaphore.changeStates(2);//red 		red
-		sleep(1);
+		std::this_thread::sleep_for(1s);
+		// sleep(1);
 		
 		this->theSemaphore.changeStates(3);//red 		green
-		sleep(this->minGreenTime);
+		std::this_thread::sleep_for(1s);
+		// sleep(this->minGreenTime);
 
-		this->theSemaphore.changeStates(4);//red 		yellow	
-		sleep(this->yellowTime);
+		this->theSemaphore.changeStates(4);//red 		yellow
+		std::this_thread::sleep_for(1s);	
+		// sleep(this->yellowTime);
 
 		this->theSemaphore.changeStates(2);//red 		red
-		sleep(1);
+		std::this_thread::sleep_for(1s);
 	}
 
 }

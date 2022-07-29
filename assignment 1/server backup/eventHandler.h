@@ -10,7 +10,7 @@
 #include <chrono>
 #include <thread>
 
-static int useTime;
+// static int useTime;
 
 
 class eventHandler{

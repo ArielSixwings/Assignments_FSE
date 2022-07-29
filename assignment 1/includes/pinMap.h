@@ -8,7 +8,7 @@
 class pinMap{
 	
 public:
-	int pinMap[28];
+	int theMap[28];
 	pinMap();
 };
 

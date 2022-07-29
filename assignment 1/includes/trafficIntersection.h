@@ -2,14 +2,16 @@
 #define TRAFFICINTERSECTION_H
 
 #include "semaphore.h"
-#include "eventHandler.h"
+#include "pinMap.h"
 #include <bits/stdc++.h> 
 #include <sys/wait.h>
+#include <thread>
 
-int useTime;
-int minTime;
+static int useTime;
+static int minTime;
 
-class trafficIntersection : public pinMap{
+class trafficIntersection: public pinMap
+{
 
 public:
 	semaphore theSemaphore;
@@ -23,16 +25,16 @@ public:
 	int buttonOne;
 	int buttonTwo;
 
-	trafficIntersection(std::vector<semaphore> thestates,
-		int theminGreenTime,
-		int themaxGreenTime,
-		int theminRedTime,
-		int themaxRedTime,
-		int theyellowTime);
+	trafficIntersection(int theminGreenTime,
+						int themaxGreenTime,
+						int theminRedTime,
+						int themaxRedTime,
+						int theyellowTime);
 
 	void print();
-	void printInTime();
-	void listenButton(int pin)
+	void manageTime();
+	void listenButton(int pin);
+	void controlIntersection();
 
 };
 

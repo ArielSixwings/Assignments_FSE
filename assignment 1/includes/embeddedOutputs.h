@@ -4,8 +4,10 @@
 #include <iostream>
 #include <wiringPi.h>
 #include <bits/stdc++.h>
+#include "pinMap.h"
 
-class embeddedOutputs : public pinMap{
+class embeddedOutputs: public pinMap
+{
 	
 public:
 	int* group;
