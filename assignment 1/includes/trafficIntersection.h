@@ -6,15 +6,22 @@
 #include <bits/stdc++.h> 
 #include <sys/wait.h>
 
+int useTime;
+int minTime;
+
 class trafficIntersection : public pinMap{
 
 public:
-	std::vector<semaphore> states;
+	semaphore theSemaphore;
+	
 	int minGreenTime;
 	int maxGreenTime;
 	int minRedTime;
 	int maxRedTime;
 	int yellowTime;
+
+	int buttonOne;
+	int buttonTwo;
 
 	trafficIntersection(std::vector<semaphore> thestates,
 		int theminGreenTime,
