@@ -6,7 +6,7 @@
 #include <bits/stdc++.h> 
 #include <sys/wait.h>
 
-class trafficIntersection{
+class trafficIntersection : public pinMap{
 
 public:
 	std::vector<semaphore> states;
@@ -25,6 +25,7 @@ public:
 
 	void print();
 	void printInTime();
+	void listenButton(int pin)
 
 };
 

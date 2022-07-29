@@ -1,7 +1,6 @@
 #include "../includes/embeddedOutputs.h"
 
 embeddedOutputs::embeddedOutputs(){
-	this->pinMap();
 }
 
 bool embeddedOutputs::setOutput(int* pins){

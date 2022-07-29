@@ -54,3 +54,13 @@ void trafficIntersection::printInTime(){
 	this->states[0].print();
 	Listener.join();
 }
+
+#include "../includes/embeddedInputs.h"
+
+
+void trafficIntersection::listenButton(int pin){
+	wiringPiIRS(pin,INT_EDGE_RISING,changeTime);
+}
+void changeTime(){
+	useTime = minTime;
+}

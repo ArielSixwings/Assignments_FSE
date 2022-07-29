@@ -5,7 +5,7 @@
 #include <wiringPi.h>
 #include <bits/stdc++.h>
 
-class embeddedOutputs : pinMap{
+class embeddedOutputs : public pinMap{
 	
 public:
 	int* group;
