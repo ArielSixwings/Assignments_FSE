@@ -6,9 +6,13 @@ trafficIntersection::trafficIntersection(){
 
 	this->buttonOne = this->theMap[8];
 	this->buttonTwo = this->theMap[7];
-	
+	this->carSensorOne = this->theMap[14];
+	this->carSensorTwo = this->theMap[15];
+
 	pinMode(this->theMap[8], INPUT);
 	pinMode(this->theMap[7], INPUT);
+	pinMode(this->theMap[14], INPUT);
+	pinMode(this->theMap[15], INPUT);
 
 }
 
@@ -43,6 +47,9 @@ void trafficIntersection::manageTime(){
 void trafficIntersection::controlIntersection(){
 	this->listenButton(this->buttonOne);
 	this->listenButton(this->buttonTwo);
+
+	this->listenButton(this->carSensorOne);
+	this->listenButton(this->carSensorTwo);
 
 	this->theSemaphore.changeStates(5);//off 		off
 	std::this_thread::sleep_for(5s);

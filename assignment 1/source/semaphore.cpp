@@ -40,21 +40,22 @@ semaphore::semaphore(){
 }
 
 void semaphore::setOutputs(){
+	pinMode(this->theMap[20], OUTPUT);
+	pinMode(this->theMap[16], OUTPUT);
+	pinMode(this->theMap[12], OUTPUT);
+	
 	pinMode(this->theMap[1],  OUTPUT);
 	pinMode(this->theMap[26], OUTPUT);
 	pinMode(this->theMap[21], OUTPUT);
 
-	pinMode(this->theMap[20], OUTPUT);
-	pinMode(this->theMap[16], OUTPUT);
-	pinMode(this->theMap[12], OUTPUT);
 }
 
 void semaphore::changeStates(int state){
-	digitalWrite(this->theMap[1],  this->states[state][0]);
-	digitalWrite(this->theMap[26], this->states[state][1]);
-	digitalWrite(this->theMap[21], this->states[state][2]);
+	digitalWrite(this->theMap[20], this->states[state][0]);
+	digitalWrite(this->theMap[16], this->states[state][1]);
+	digitalWrite(this->theMap[12], this->states[state][2]);
 
-	digitalWrite(this->theMap[20], this->states[state][3]);
-	digitalWrite(this->theMap[16], this->states[state][4]);
-	digitalWrite(this->theMap[12], this->states[state][5]);
+	digitalWrite(this->theMap[1],  this->states[state][3]);
+	digitalWrite(this->theMap[26], this->states[state][4]);
+	digitalWrite(this->theMap[21], this->states[state][5]);
 }

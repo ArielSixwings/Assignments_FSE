@@ -7,7 +7,7 @@
 #include <sys/wait.h>
 #include <thread>
 
-static int useTime = 5;
+static int useTime = 10;
 static int minTime = 5;
 
 class trafficIntersection: public pinMap
@@ -18,6 +18,8 @@ public:
 
 	int buttonOne;
 	int buttonTwo;
+	int carSensorOne;
+	int carSensorTwo;
 
 	trafficIntersection();
 
