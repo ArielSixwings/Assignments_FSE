@@ -36,8 +36,8 @@ void trafficIntersection::manageTime(){
 		duration = end - start;
 	}
 
+	std::cout << "Returning to proced to new state: time: " << useTime << std::endl;
 	useTime = 2*minTime;
-	std::cout << "out of for, returning to proced to new state" << std::endl;
 }
 
 void trafficIntersection::controlIntersection(){

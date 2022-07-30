@@ -36,11 +36,6 @@ semaphore::semaphore(){
 		this->states[6][i] = conf6[i];
 	}
 	
-	
-	for (int i = 0; i < 6; ++i){
-		std::cout << this->states[0][i] << " ";
-	}
-
 	this->setOutputs();
 }
 
