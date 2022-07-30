@@ -7,31 +7,20 @@
 #include <sys/wait.h>
 #include <thread>
 
-static int useTime;
-static int minTime;
+static int useTime = 5;
+static int minTime = 5;
 
 class trafficIntersection: public pinMap
 {
 
 public:
 	semaphore theSemaphore;
-	
-	int minGreenTime;
-	int maxGreenTime;
-	int minRedTime;
-	int maxRedTime;
-	int yellowTime;
 
 	int buttonOne;
 	int buttonTwo;
 
-	trafficIntersection(int theminGreenTime,
-						int themaxGreenTime,
-						int theminRedTime,
-						int themaxRedTime,
-						int theyellowTime);
+	trafficIntersection();
 
-	void print();
 	void manageTime();
 	void listenButton(int pin);
 	void controlIntersection();

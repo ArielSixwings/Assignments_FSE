@@ -1,5 +1,7 @@
 #include "../includes/pinMap.h"
 
+//{ 1,26,21,20,16,12};
+//{31,25,29,28,27,26};
 pinMap::pinMap(){
 	this->theMap[0] = 30;
 	this->theMap[1] = 31;

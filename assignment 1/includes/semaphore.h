@@ -1,23 +1,17 @@
 #ifndef SEMAPHORE_H
 #define SEMAPHORE_H
 
+#include "pinMap.h"
 #include <iostream>
-#include "embeddedOutputs.h"
 
-class semaphore{
+class semaphore : pinMap{
 	
 public:
-	int states[7][6];
-	embeddedOutputs lights;
+	int** states;
 	
 	semaphore();
-	bool changeStates(int state);
-	void setDefaultGroup(int group);
-	void print();
-
-private:	
-	bool setLightsPins(int pins[6]);
-
+	void changeStates(int state);
+	void setOutputs();
 };
 
 #endif //SEMAPHORE_H
