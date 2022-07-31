@@ -10,8 +10,8 @@ public:
 	int** states;
 	
 	semaphore();
-	void changeStates(int state);
-	void setOutputs();
+	void changeStates(bool useDeafault, int state);
+	void setOutputs(bool useDeafault);
 };
 
 #endif //SEMAPHORE_H

@@ -43,7 +43,9 @@ public:
 	int carSensorOne;
 	int carSensorTwo;
 
-	trafficIntersection();
+	bool useDefault;
+
+	trafficIntersection(bool defaultUse);
 
 	void manageTime();
 	void getVelocity(int sensorA, int sensorB);

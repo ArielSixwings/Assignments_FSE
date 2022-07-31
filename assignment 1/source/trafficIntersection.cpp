@@ -41,30 +41,60 @@ void checkSecondaryRedLight(){
 	}
 }
 
-trafficIntersection::trafficIntersection(){
+trafficIntersection::trafficIntersection(bool defaultUse){
 
-	this->buttonOne = this->theMap[8];
-	this->buttonTwo = this->theMap[7];
+	if (defaultUse){
+		this->buttonOne = this->theMap[8];
+		this->buttonTwo = this->theMap[7];
 
-	this->carSensorOne = this->theMap[14];
-	this->carSensorTwo = this->theMap[15];
+		this->carSensorOne = this->theMap[14];
+		this->carSensorTwo = this->theMap[15];
 
-	this->velocityOneA = this->theMap[23];
-	this->velocityOneB = this->theMap[18];
-	this->velocityTwoA = this->theMap[25];
-	this->velocityTwoB = this->theMap[24];
-	
-	pinMode(this->theMap[8], INPUT);
-	pinMode(this->theMap[7], INPUT);
-	
-	pinMode(this->theMap[14], INPUT);
-	pinMode(this->theMap[15], INPUT);
+		this->velocityOneA = this->theMap[23];
+		this->velocityOneB = this->theMap[18];
+		this->velocityTwoA = this->theMap[25];
+		this->velocityTwoB = this->theMap[24];
+		
+		pinMode(this->theMap[8], INPUT);
+		pinMode(this->theMap[7], INPUT);
+		
+		pinMode(this->theMap[14], INPUT);
+		pinMode(this->theMap[15], INPUT);
 
-	pinMode(this->theMap[23], INPUT);
-	pinMode(this->theMap[18], INPUT);
+		pinMode(this->theMap[23], INPUT);
+		pinMode(this->theMap[18], INPUT);
 
-	pinMode(this->theMap[25], INPUT);
-	pinMode(this->theMap[24], INPUT);
+		pinMode(this->theMap[25], INPUT);
+		pinMode(this->theMap[24], INPUT);
+
+		this->useDefault = true;
+		this->theSemaphore.setOutputs(true);
+		return;
+		
+	}
+	this->buttonOne = this->theMap[10];
+	this->buttonTwo = this->theMap[9];
+
+	this->carSensorOne = this->theMap[4];
+	this->carSensorTwo = this->theMap[17];
+
+	this->velocityOneA = this->theMap[22];
+	this->velocityOneB = this->theMap[27];
+	this->velocityTwoA = this->theMap[19];
+	this->velocityTwoB = this->theMap[13];
+		
+	pinMode(this->theMap[10], INPUT);
+	pinMode(this->theMap[9], INPUT);
+		
+	pinMode(this->theMap[4], INPUT);
+	pinMode(this->theMap[17], INPUT);
+
+	pinMode(this->theMap[22], INPUT);
+	pinMode(this->theMap[27], INPUT);
+	pinMode(this->theMap[19], INPUT);
+	pinMode(this->theMap[13], INPUT);
+	this->useDefault = false;
+	this->theSemaphore.setOutputs(false);
 }
 
 void trafficIntersection::getVelocity(int sensorA, int sensorB){
@@ -118,7 +148,7 @@ void trafficIntersection::controlIntersection(){
 
 	// this->getVelocity(this->velocityTwoA,this->velocityTwoB);
 	
-	this->theSemaphore.changeStates(5);//off 		off
+	this->theSemaphore.changeStates(this->useDefault,5);//off 		off
 	
 	std::this_thread::sleep_for(5s);
 	for (int i = 0; i < 100; ++i){
@@ -129,25 +159,25 @@ void trafficIntersection::controlIntersection(){
 
 		
 
-		this->theSemaphore.changeStates(0);//green 		red
+		this->theSemaphore.changeStates(this->useDefault,0);//green 		red
 		roadStatus = SECONDARY_ROAD_RED;
 		this->manageTime();
 		
-		this->theSemaphore.changeStates(1);//yellow 	red
+		this->theSemaphore.changeStates(this->useDefault,1);//yellow 	red
 		std::this_thread::sleep_for(3s);
 		
-		this->theSemaphore.changeStates(2);//red 		red
+		this->theSemaphore.changeStates(this->useDefault,2);//red 		red
 		roadStatus = BOTH_ROAD_RED;
 		std::this_thread::sleep_for(1s);
 		
-		this->theSemaphore.changeStates(3);//red 		green
+		this->theSemaphore.changeStates(this->useDefault,3);//red 		green
 		roadStatus = MAIN_ROAD_RED;
 		std::this_thread::sleep_for(5s);
 
-		this->theSemaphore.changeStates(4);//red 		yellow
+		this->theSemaphore.changeStates(this->useDefault,4);//red 		yellow
 		std::this_thread::sleep_for(3s);
 
-		this->theSemaphore.changeStates(2);//red 		red
+		this->theSemaphore.changeStates(this->useDefault,2);//red 		red
 		roadStatus = BOTH_ROAD_RED;
 		std::this_thread::sleep_for(1s);
 	}

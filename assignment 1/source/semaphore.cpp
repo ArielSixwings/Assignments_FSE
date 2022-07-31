@@ -36,26 +36,46 @@ semaphore::semaphore(){
 		this->states[6][i] = conf6[i];
 	}
 	
-	this->setOutputs();
 }
 
-void semaphore::setOutputs(){
-	pinMode(this->theMap[20], OUTPUT);
-	pinMode(this->theMap[16], OUTPUT);
-	pinMode(this->theMap[12], OUTPUT);
-	
-	pinMode(this->theMap[1],  OUTPUT);
-	pinMode(this->theMap[26], OUTPUT);
-	pinMode(this->theMap[21], OUTPUT);
+void semaphore::setOutputs(bool useDeafault){
+	if (useDeafault){
+		pinMode(this->theMap[20], OUTPUT);
+		pinMode(this->theMap[16], OUTPUT);
+		pinMode(this->theMap[12], OUTPUT);
+		
+		pinMode(this->theMap[1],  OUTPUT);
+		pinMode(this->theMap[26], OUTPUT);
+		pinMode(this->theMap[21], OUTPUT);
+		return;
+	}
+	pinMode(this->theMap[0], OUTPUT);
+	pinMode(this->theMap[5], OUTPUT);
+	pinMode(this->theMap[6], OUTPUT);
+		
+	pinMode(this->theMap[2],  OUTPUT);
+	pinMode(this->theMap[3],  OUTPUT);
+	pinMode(this->theMap[11], OUTPUT);
 
 }
 
-void semaphore::changeStates(int state){
-	digitalWrite(this->theMap[20], this->states[state][0]);
-	digitalWrite(this->theMap[16], this->states[state][1]);
-	digitalWrite(this->theMap[12], this->states[state][2]);
+void semaphore::changeStates(bool useDeafault, int state){
+	if (useDeafault){
+		digitalWrite(this->theMap[20], this->states[state][0]);
+		digitalWrite(this->theMap[16], this->states[state][1]);
+		digitalWrite(this->theMap[12], this->states[state][2]);
 
-	digitalWrite(this->theMap[1],  this->states[state][3]);
-	digitalWrite(this->theMap[26], this->states[state][4]);
-	digitalWrite(this->theMap[21], this->states[state][5]);
+		digitalWrite(this->theMap[1],  this->states[state][3]);
+		digitalWrite(this->theMap[26], this->states[state][4]);
+		digitalWrite(this->theMap[21], this->states[state][5]);
+		return;
+	}
+	digitalWrite(this->theMap[0], this->states[state][0]);
+	digitalWrite(this->theMap[5], this->states[state][1]);
+	digitalWrite(this->theMap[6], this->states[state][2]);
+
+	digitalWrite(this->theMap[2],  this->states[state][3]);
+	digitalWrite(this->theMap[3], this->states[state][4]);
+	digitalWrite(this->theMap[11], this->states[state][5]);
+
 }
