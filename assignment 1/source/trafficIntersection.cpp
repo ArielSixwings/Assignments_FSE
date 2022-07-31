@@ -25,8 +25,12 @@ void getTimeEnd(){
 	velocity = 3.6*1/float(duration.count());
 	
 	std::cout << "velocity: "<< velocity << std::endl;
+	if (velocity > 66){
+		std::cout << "VELOCITY Infraction" << std::endl;
+		velocityInfraction++;
+		totalInfraction++;
+	}
 	checkMainRedLight();
-
 }
 
 

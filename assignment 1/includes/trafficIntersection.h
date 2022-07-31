@@ -3,7 +3,6 @@
 
 #include "semaphore.h"
 #include "pinMap.h"
-#include <bits/stdc++.h> 
 #include <sys/wait.h>
 #include <thread>
 
@@ -14,6 +13,7 @@
 static int roadStatus = 0;
 static float velocity = 0.0;
 
+static int velocityInfraction = 0;
 static int totalInfraction = 0;
 static int mainRoadInfraction = 0;
 static int secondaryRoadInfraction = 0;

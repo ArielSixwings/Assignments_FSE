@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <wiringPi.h>
-#include <bits/stdc++.h>
 
 class pinMap{
 	
