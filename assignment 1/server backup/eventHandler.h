@@ -10,8 +10,6 @@
 #include <chrono>
 #include <thread>
 
-// static int useTime;
-
 
 class eventHandler{
 	
@@ -24,15 +22,11 @@ public:
 	struct sockaddr_in serverAddr;
 	struct sockaddr_in clientAddr;
 
-	int minTime;
-	int maxTime;
-
-	eventHandler(int theminTime, int themaxTime,int thePort);
+	eventHandler(int thePort);
 
 	bool openServer();
 	bool stablishConnetion();
 	void handleClient(int socketCliente);
-	void handleTime();
 	bool resetTimes();
 
 };

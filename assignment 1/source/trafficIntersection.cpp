@@ -14,6 +14,7 @@ void checkMainRedLight(){
 	if ((roadStatus == MAIN_ROAD_RED) or (roadStatus == BOTH_ROAD_RED)){
 		mainRoadInfraction++;
 		totalInfraction++;
+		system("omxplayer example.mp3");
 	}
 }
 
@@ -29,6 +30,7 @@ void getTimeEnd(){
 		std::cout << "VELOCITY Infraction" << std::endl;
 		velocityInfraction++;
 		totalInfraction++;
+		system("omxplayer example.mp3");
 	}
 	checkMainRedLight();
 }
@@ -38,6 +40,7 @@ void checkSecondaryRedLight(){
 	if ((roadStatus == SECONDARY_ROAD_RED) or (roadStatus == BOTH_ROAD_RED)){
 		secondaryRoadInfraction++;
 		totalInfraction++;
+		system("omxplayer example.mp3");
 	}
 }
 

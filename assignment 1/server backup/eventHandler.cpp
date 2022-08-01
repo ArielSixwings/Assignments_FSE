@@ -1,12 +1,7 @@
-#include "../includes/eventHandler.h"
+#include "eventHandler.h"
 
-eventHandler::eventHandler(int theminTime, int themaxTime,int thePort){
+eventHandler::eventHandler(int thePort){
 	this->port = thePort;
-
-	this->minTime = theminTime;
-	this->maxTime = themaxTime;
-	useTime = this->maxTime;
-
 }
 
 bool eventHandler::openServer(){
@@ -44,32 +39,7 @@ void eventHandler::handleClient(int socketCliente) {
 	if((recievedLength = recv(socketCliente, buffer, 16, 0)) < 0){
 		std::cout << "Error at recv" << std::endl;
 	}
-
-	useTime = this->minTime;
-
-	std::cout << "Button pressed, using minimum time: " << useTime << std::endl;
-
-}
-
-void eventHandler::handleTime() {
-	
-	using namespace std::literals::chrono_literals;
-	char buffer[16];
-	int recievedLength;
-
-	auto start = std::chrono::high_resolution_clock::now();
-	auto end = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<float> duration = end - start;
-
-	for (int i = 0; duration < std::chrono::duration<float>(useTime); ++i)
-	{
-		std::this_thread::sleep_for(1s);
-		end = std::chrono::high_resolution_clock::now();
-		duration = end - start;
-		std::cout << duration.count() << "s  " << i << std::endl;
-	}
-	std::cout << "out of for, returning to proced to new state" << std::endl;
-
+	std::cout << "mensage recieved" << std::endl;
 }
 
 bool eventHandler::stablishConnetion(){
@@ -77,28 +47,34 @@ bool eventHandler::stablishConnetion(){
 	unsigned int clientLength;
 	int socketCliente;
 	
-	std::cout << "Listening" << std::endl;
-	clientLength = sizeof(this->clientAddr);
-	if((socketCliente = accept(this->serverSocket, (struct sockaddr *) &(this->clientAddr), &clientLength)) < 0){
-		std::cout << "Failed at accept" << std::endl;
-		return false;
+	for (int i = 0; i < 100; ++i){
+		std::cout << "Listening" << std::endl;
+		clientLength = sizeof(this->clientAddr);
+		if((socketCliente = accept(this->serverSocket, (struct sockaddr *) &(this->clientAddr), &clientLength)) < 0){
+			std::cout << "Failed at accept" << std::endl;
+			return false;
+		}
+			
+		std::cout << "Connect to client %s"<< inet_ntoa(this->clientAddr.sin_addr) << std::endl;
+		
+
+		this->handleClient(socketCliente);
+		close(socketCliente);
 	}
-		
-	std::cout << "Connect to client %s"<< inet_ntoa(this->clientAddr.sin_addr) << std::endl;
-		
-	this->handleClient(socketCliente);
 	
-	close(socketCliente);
 	close(this->serverSocket);
 	return true;
 }
 
-// int main(){
+void work(eventHandler theHandler){
+	theHandler.stablishConnetion();
+}
 
-// 	eventHandler test(5,10,8000);
-// 	test.openServer();
+int main(){
 
-// 	std::thread Listener(work,test);
-// 	test.handleTime();
-// 	Listener.join();
-// }
+	eventHandler test(8000);
+	test.openServer();
+
+	std::thread Listener(work,test);
+	Listener.join();
+}
