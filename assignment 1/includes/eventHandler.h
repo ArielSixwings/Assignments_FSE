@@ -1,6 +1,7 @@
 #ifndef EVENTHANDLER_H
 #define EVENTHANDLER_H
 
+#include "tcpProtocol.h"
 #include <iostream>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -11,16 +12,8 @@
 #include <thread>
 
 
-class eventHandler{
-	
-
+class eventHandler : public tcpProtocol {
 public:
-	unsigned short port;
-
-	int serverSocket;
-	
-	struct sockaddr_in serverAddr;
-	struct sockaddr_in clientAddr;
 
 	eventHandler(int thePort);
 
