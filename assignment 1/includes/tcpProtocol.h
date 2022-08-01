@@ -16,7 +16,6 @@ class tcpProtocol{
 
 public:
 	unsigned short port;
-	int serverSocket;
 	
 	struct sockaddr_in serverAddr;
 	struct sockaddr_in clientAddr;

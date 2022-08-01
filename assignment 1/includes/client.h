@@ -1,7 +1,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-
+#include "tcpProtocol.h"
 #include <iostream>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -12,15 +12,14 @@
 #include <thread>
 
 
-class client{
+class client : public tcpProtocol{
 
 public:
-	unsigned short port;
-	int serverSocket;
+	char *serverIp;
+	int clientSocket;
 	
-	struct sockaddr_in serverAddr;
-	struct sockaddr_in clientAddr;
-	client(int thePort);
+	client(int thePort,char *ipServer);
+	void connectClient();
 };
 
 #endif //CLIENT_H

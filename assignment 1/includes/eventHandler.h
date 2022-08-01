@@ -15,6 +15,8 @@
 class eventHandler : public tcpProtocol {
 public:
 
+	int serverSocket;
+	
 	eventHandler(int thePort);
 
 	bool openServer();

@@ -5,7 +5,7 @@ eventHandler::eventHandler(int thePort){
 }
 
 bool eventHandler::openServer(){
-	std::cout <<  this->port << std::endl;
+	std::cout <<"Using port: " << this->port << std::endl;
 	// Open socket
 	if((this->serverSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
 		std::cout << "Failed to open server socket" << std::endl;
