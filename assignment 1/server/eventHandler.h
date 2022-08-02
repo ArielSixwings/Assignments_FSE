@@ -1,7 +1,7 @@
 #ifndef EVENTHANDLER_H
 #define EVENTHANDLER_H
 
-#include "tcpProtocol.h"
+#include "../includes/tcpProtocol.h"
 #include <iostream>
 #include <sys/socket.h>
 #include <arpa/inet.h>

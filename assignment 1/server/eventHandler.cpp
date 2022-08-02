@@ -1,4 +1,4 @@
-#include "../includes/eventHandler.h"
+#include "eventHandler.h"
 
 eventHandler::eventHandler(int thePort){
 	this->port = thePort;
@@ -32,14 +32,14 @@ bool eventHandler::openServer(){
 }
 
 void eventHandler::handleClient(int socketCliente) {
-	char buffer[16];
+	void* buffer = new(int[16]);
 	int recievedLength;
 	int embebedSignal = 0;
 
 	if((recievedLength = recv(socketCliente, buffer, 16, 0)) < 0){
 		std::cout << "Error at recv" << std::endl;
 	}
-	std::cout << "mensage recieved" << std::endl;
+	std::cout << "mensage recieved: " << *((int*)buffer) << std::endl;
 }
 
 bool eventHandler::stablishConnetion(){
@@ -47,21 +47,19 @@ bool eventHandler::stablishConnetion(){
 	unsigned int clientLength;
 	int socketCliente;
 	
-	for (int i = 0; i < 100; ++i){
-		std::cout << "Listening" << std::endl;
-		clientLength = sizeof(this->clientAddr);
-		if((socketCliente = accept(this->serverSocket, (struct sockaddr *) &(this->clientAddr), &clientLength)) < 0){
-			std::cout << "Failed at accept" << std::endl;
-			return false;
-		}
-			
-		std::cout << "Connect to client %s"<< inet_ntoa(this->clientAddr.sin_addr) << std::endl;
-		
-
-		this->handleClient(socketCliente);
-		close(socketCliente);
+	std::cout << "Listening" << std::endl;
+	clientLength = sizeof(this->clientAddr);
+	if((socketCliente = accept(this->serverSocket, (struct sockaddr *) &(this->clientAddr), &clientLength)) < 0){
+		std::cout << "Failed at accept" << std::endl;
+		return false;
 	}
+		
+	std::cout << "Connect to client %s"<< inet_ntoa(this->clientAddr.sin_addr) << std::endl;
 	
+	for (int i = 0; i < 100; ++i){
+		this->handleClient(socketCliente);
+	}
+	close(socketCliente);
 	close(this->serverSocket);
 	return true;
 }

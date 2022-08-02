@@ -2,6 +2,7 @@
 #define TRAFFICINTERSECTION_H
 
 #include "semaphore.h"
+#include "client.h"
 #include "pinMap.h"
 #include <sys/wait.h>
 #include <thread>

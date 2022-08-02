@@ -11,6 +11,7 @@
 
 # Directory and name of the executable:
 EXEC = trafficIntersection
+# SERVER = server
 
 #Directory of source code:
 DIR_SOURCE = source

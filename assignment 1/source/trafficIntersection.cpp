@@ -14,7 +14,8 @@ void checkMainRedLight(){
 	if ((roadStatus == MAIN_ROAD_RED) or (roadStatus == BOTH_ROAD_RED)){
 		mainRoadInfraction++;
 		totalInfraction++;
-		system("cvlc alarm.mp3");
+		// send(theClientSocket,"MAINREDINFRA",5,0);
+		// system("cvlc alarm.mp3");
 	}
 }
 
@@ -28,9 +29,10 @@ void getTimeEnd(){
 	std::cout << "velocity: "<< velocity << std::endl;
 	if (velocity > 66){
 		std::cout << "VELOCITY Infraction" << std::endl;
+		// send(theClientSocket,"VELOCITYINFRA",5,0);
 		velocityInfraction++;
 		totalInfraction++;
-		system("cvlc alarm.mp3");
+		// system("cvlc alarm.mp3");
 	}
 	checkMainRedLight();
 }
@@ -40,7 +42,8 @@ void checkSecondaryRedLight(){
 	if ((roadStatus == SECONDARY_ROAD_RED) or (roadStatus == BOTH_ROAD_RED)){
 		secondaryRoadInfraction++;
 		totalInfraction++;
-		system("cvlc alarm.mp3");
+		// send(theClientSocket,"SECONREDINFRA",5,0);
+		// system("cvlc alarm.mp3");
 	}
 }
 
@@ -138,6 +141,13 @@ void trafficIntersection::secondaryRoadRedLightInfraction(int sensorA, int senso
 }
 
 void trafficIntersection::controlIntersection(){
+	char* theIP = "164.41.98.26";
+	std::string message;
+	client intersectionClient;
+
+	intersectionClient.init(8000,theIP);
+
+	intersectionClient.connectClient();
 	this->listenButton(this->buttonOne);
 	this->listenButton(this->buttonTwo);
 
@@ -155,6 +165,18 @@ void trafficIntersection::controlIntersection(){
 	
 	std::this_thread::sleep_for(5s);
 	for (int i = 0; i < 100; ++i){
+		// message = "A" + std::to_string(velocityInfraction);
+		// send(intersectionClient.clientSocket,static_cast<void*>(&message),5,0);
+
+		// message = "B" + std::to_string(mainRoadInfraction);
+		// send(intersectionClient.clientSocket,static_cast<void*>(&message),5,0);
+
+		message = "INFR" + std::to_string(mainRoadInfraction);
+		std::cout <<"message: " << message << std::endl;
+		void* help = &mainRoadInfraction;
+		
+		send(intersectionClient.clientSocket,help,5,0);
+		
 		std::cout << "Start new iteration" << std::endl;
 		std::cout << "Main Road Infraction:" << mainRoadInfraction <<std::endl;
 		std::cout << "Secondary Road Infraction:" << secondaryRoadInfraction <<std::endl;
@@ -184,5 +206,6 @@ void trafficIntersection::controlIntersection(){
 		roadStatus = BOTH_ROAD_RED;
 		std::this_thread::sleep_for(1s);
 	}
+	close(intersectionClient.clientSocket);
 
 }

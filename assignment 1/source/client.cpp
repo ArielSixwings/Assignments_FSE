@@ -35,16 +35,15 @@ void client::connectClient(){
 }
 
 
-int main(void) {
+// int main(void) {
 
-	char* theIP = "127.0.0.1";
-	client test(8000,theIP);
+// 	char* theIP = "127.0.0.1";
+// 	client test(8000,theIP);
 
-	for (int i = 0; i < 10; ++i){
-		std::cout << "sla mano" <<std::endl;
-		test.connectClient();
-		send(test.clientSocket,"salve",5,0);
-		sleep(2);
-	}
-	close(test.clientSocket);
-}
+// 	test.connectClient();
+// 	for (int i = 0; i < 10; ++i){
+// 		send(test.clientSocket,"salve",5,0);
+// 		sleep(2);
+// 	}
+// 	close(test.clientSocket);
+// }
