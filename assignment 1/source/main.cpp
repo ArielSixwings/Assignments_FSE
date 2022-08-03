@@ -3,23 +3,34 @@
 #include "../includes/trafficIntersection.h"
 
 
+static bool rasp;
+
 void doOne(){
-	trafficIntersection theIntersection(true);
+	trafficIntersection theIntersection(true,rasp);
 	theIntersection.controlIntersection();
 
 }
 
 void doTwo(){
-	trafficIntersection theIntersection(false);
+	trafficIntersection theIntersection(false,rasp);
 	theIntersection.controlIntersection();
 
 }
 
 
 int main (void){
-	std::cout << "Trafic lights" << std::endl;
-
+	int ans;
 	wiringPiSetup();
+	
+	std::cout << "Use 0 if you are at rasp43 and 1 if you are at rasp44" << std::endl;
+	std::cin >> ans;
+
+	if (ans == 0){
+		rasp = true;
+	}else{
+		rasp = false;
+	}
+	
 	
 	std::thread intersectionOne(doOne);
 	std::thread intersectionTwo(doTwo);

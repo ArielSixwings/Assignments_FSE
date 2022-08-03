@@ -12,9 +12,11 @@ void getTimeStart(){
 
 void checkMainRedLight(){
 	if ((roadStatus == MAIN_ROAD_RED) or (roadStatus == BOTH_ROAD_RED)){
-		mainRoadInfraction++;
-		totalInfraction++;
-		// send(theClientSocket,"MAINREDINFRA",5,0);
+		if (usedSSH){
+			RASPA_mainRoadInfraction++;
+			return;
+		}
+		RASPB_mainRoadInfraction++;
 		// system("cvlc alarm.mp3");
 	}
 }
@@ -28,10 +30,11 @@ void getTimeEnd(){
 	
 	std::cout << "velocity: "<< velocity << std::endl;
 	if (velocity > 66){
-		std::cout << "VELOCITY Infraction" << std::endl;
-		// send(theClientSocket,"VELOCITYINFRA",5,0);
-		velocityInfraction++;
-		totalInfraction++;
+		if (usedSSH){
+			RASPA_VelocityInfraction++;
+			return;
+		}
+		RASPB_VelocityInfraction++;
 		// system("cvlc alarm.mp3");
 	}
 	checkMainRedLight();
@@ -40,14 +43,18 @@ void getTimeEnd(){
 
 void checkSecondaryRedLight(){
 	if ((roadStatus == SECONDARY_ROAD_RED) or (roadStatus == BOTH_ROAD_RED)){
-		secondaryRoadInfraction++;
-		totalInfraction++;
-		// send(theClientSocket,"SECONREDINFRA",5,0);
+		if (usedSSH){
+			RASPA_secondaryRoadInfraction++;
+			return;
+		}
+		RASPB_secondaryRoadInfraction++;
 		// system("cvlc alarm.mp3");
 	}
 }
 
-trafficIntersection::trafficIntersection(bool defaultUse){
+trafficIntersection::trafficIntersection(bool defaultUse,bool rasp){
+
+	usedSSH = rasp;
 
 	if (defaultUse){
 		this->buttonOne = this->theMap[8];
@@ -144,50 +151,97 @@ void trafficIntersection::reportToServer(client theClient){
 	int* message = new(int[2]);
 	
 	if (this->useDefault){
-		message[0] = 1;
-		message[1] = mainRoadInfraction;
+		if (usedSSH){
+			message[0] = 1;
+			message[1] = RASPA_mainRoadInfraction;
+			send(theClient.clientSocket,message,5,0);
+			std::this_thread::sleep_for(0.3s);
+
+			message[0] = 3;
+			message[1] = RASPA_secondaryRoadInfraction;
+			send(theClient.clientSocket,message,5,0);
+			std::this_thread::sleep_for(0.3s);
+
+			message[0] = 5;
+			message[1] = RASPA_VelocityInfraction;
+			send(theClient.clientSocket,message,5,0);
+			std::this_thread::sleep_for(0.4s);
+			return;
+		}
+
+		message[0] = 10;
+		message[1] = RASPB_mainRoadInfraction;
 		send(theClient.clientSocket,message,5,0);
 		std::this_thread::sleep_for(0.3s);
 
-		message[0] = 3;
-		message[1] = secondaryRoadInfraction;
+		message[0] = 30;
+		message[1] = RASPB_secondaryRoadInfraction;
 		send(theClient.clientSocket,message,5,0);
 		std::this_thread::sleep_for(0.3s);
 
-		message[0] = 5;
-		message[1] = velocityInfraction;
+		message[0] = 50;
+		message[1] = RASPB_VelocityInfraction;
+		send(theClient.clientSocket,message,5,0);
+		std::this_thread::sleep_for(0.4s);
+		return;		
+	}
+
+	if (usedSSH){
+		message[0] = 2;
+		message[1] = RASPA_mainRoadInfraction;
+		send(theClient.clientSocket,message,5,0);
+		std::this_thread::sleep_for(0.3s);
+		
+		message[0] = 4;
+		message[1] = RASPA_secondaryRoadInfraction;
+		send(theClient.clientSocket,message,5,0);
+		std::this_thread::sleep_for(0.3s);
+
+		message[0] = 6;
+		message[1] = RASPA_VelocityInfraction;
 		send(theClient.clientSocket,message,5,0);
 		std::this_thread::sleep_for(0.4s);
 		return;
 	}
-	message[0] = 2;
-	message[1] = mainRoadInfraction;
+	message[0] = 20;
+	message[1] = RASPB_mainRoadInfraction;
 	send(theClient.clientSocket,message,5,0);
 	std::this_thread::sleep_for(0.3s);
-	
-	message[0] = 4;
-	message[1] = secondaryRoadInfraction;
+		
+	message[0] = 40;
+	message[1] = RASPB_secondaryRoadInfraction;
 	send(theClient.clientSocket,message,5,0);
 	std::this_thread::sleep_for(0.3s);
 
-	message[0] = 6;
-	message[1] = velocityInfraction;
+	message[0] = 60;
+	message[1] = RASPB_VelocityInfraction;
 	send(theClient.clientSocket,message,5,0);
-	std::this_thread::sleep_for(0.4s);
+	std::this_thread::sleep_for(0.4s);	
 }
 
 
 void trafficIntersection::controlIntersection(){
-	char* theIP = "164.41.98.26";
-	std::string message;
-
+	char* rasp43 = "164.41.98.17";
+	char* rasp44 = "164.41.98.26";
+	char* theIP;
 	int port;
 
-	if (this->useDefault){
-		port = 8000;
+	if (usedSSH){
+		theIP = rasp43;
+		if (this->useDefault){
+			port = 10021;
+		}else{
+			port = 10022;
+		}
 	}else{
-		port = 9000;
+		theIP = rasp44;
+		if (this->useDefault){
+			port = 10023;
+		}else{
+			port = 10024;
+		}		
 	}
+
 
 	client intersectionClient(port,theIP);
 
@@ -211,10 +265,6 @@ void trafficIntersection::controlIntersection(){
 	for (int i = 0; i < 100; ++i){
 		
 		this->reportToServer(intersectionClient);
-		// std::cout << "Start new iteration" << std::endl;
-		// std::cout << "Main Road Infraction:" << mainRoadInfraction <<std::endl;
-		// std::cout << "Secondary Road Infraction:" << secondaryRoadInfraction <<std::endl;
-		// std::cout << "Total Infraction:" << totalInfraction <<std::endl;
 
 		this->theSemaphore.changeStates(this->useDefault,0);//green 		red
 		roadStatus = SECONDARY_ROAD_RED;

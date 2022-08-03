@@ -11,14 +11,17 @@
 #define MAIN_ROAD_RED 20
 #define SECONDARY_ROAD_RED 10
 
+static bool usedSSH = false;
 static int roadStatus = 0;
 static float velocity = 0.0;
 
-static int velocityInfraction = 0;
-static int totalInfraction = 0;
-static int mainRoadInfraction = 0;
-static int secondaryRoadInfraction = 0;
+static int RASPA_VelocityInfraction = 0;
+static int RASPA_mainRoadInfraction = 0;
+static int RASPA_secondaryRoadInfraction = 0;
 
+static int RASPB_VelocityInfraction = 0;
+static int RASPB_mainRoadInfraction = 0;
+static int RASPB_secondaryRoadInfraction = 0;
 
 static int useTime = 10;
 static int minTime = 5;
@@ -46,7 +49,7 @@ public:
 
 	bool useDefault;
 
-	trafficIntersection(bool defaultUse);
+	trafficIntersection(bool defaultUse,bool rasp);
 
 	void manageTime();
 	void getVelocity(int sensorA, int sensorB);

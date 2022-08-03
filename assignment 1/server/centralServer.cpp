@@ -94,8 +94,8 @@ void work(eventHandler theHandler){
 
 int main(){
 
-	eventHandler intersection3(8000);
-	eventHandler intersection4(9000);
+	eventHandler intersection3(10021);
+	eventHandler intersection4(10022);
 
 	intersection3.openServer();
 	std::this_thread::sleep_for(1s);
