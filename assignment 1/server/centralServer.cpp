@@ -1,4 +1,6 @@
-#include "eventHandler.h"
+#include "centralServer.h"
+
+using namespace std::literals::chrono_literals;
 
 eventHandler::eventHandler(int thePort){
 	this->port = thePort;
@@ -32,14 +34,35 @@ bool eventHandler::openServer(){
 }
 
 void eventHandler::handleClient(int socketCliente) {
-	void* buffer = new(int[16]);
+	int* buffer = new(int[16]);
 	int recievedLength;
 	int embebedSignal = 0;
 
 	if((recievedLength = recv(socketCliente, buffer, 16, 0)) < 0){
 		std::cout << "Error at recv" << std::endl;
 	}
-	std::cout << "mensage recieved: " << *((int*)buffer) << std::endl;
+	switch(buffer[0]) {
+		case 1:
+			std::cout << "Run red light infraction on main road at intersection 3: " << buffer[1] << std::endl;
+			break;
+		case 3:
+			std::cout << "Run red light infraction on secondary road at intersection 3: " << buffer[1] << std::endl;
+			break;
+		case 5:
+			std::cout << "Number of Velocity infractions at intersection 3: " << buffer[1] << std::endl;
+			break;
+		case 2:
+			std::cout << "Run red light infraction on main road at intersection 4: " << buffer[1] << std::endl;
+			break;
+		case 4:
+			std::cout << "Run red light infraction on secondary road at intersection 4: " << buffer[1] << std::endl;
+			break;
+		case 6:
+			std::cout << "Number of Velocity infractions at intersection 4: " << buffer[1] << std::endl;
+			break;			
+	default:
+		std::cout << "UnKnow client" << std::endl;
+	}
 }
 
 bool eventHandler::stablishConnetion(){
@@ -59,6 +82,7 @@ bool eventHandler::stablishConnetion(){
 	for (int i = 0; i < 100; ++i){
 		this->handleClient(socketCliente);
 	}
+
 	close(socketCliente);
 	close(this->serverSocket);
 	return true;
@@ -70,9 +94,16 @@ void work(eventHandler theHandler){
 
 int main(){
 
-	eventHandler test(8000);
-	test.openServer();
+	eventHandler intersection3(8000);
+	eventHandler intersection4(9000);
 
-	std::thread Listener(work,test);
-	Listener.join();
+	intersection3.openServer();
+	std::this_thread::sleep_for(1s);
+	intersection4.openServer();
+
+	std::thread Listener3(work,intersection3);
+	std::thread Listener4(work,intersection4);
+	
+	Listener3.join();
+	Listener4.join();
 }

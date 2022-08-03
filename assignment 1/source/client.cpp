@@ -33,17 +33,3 @@ void client::connectClient(){
 		std::cout <<"Error to connect"<< std::endl;
 	}
 }
-
-
-// int main(void) {
-
-// 	char* theIP = "127.0.0.1";
-// 	client test(8000,theIP);
-
-// 	test.connectClient();
-// 	for (int i = 0; i < 10; ++i){
-// 		send(test.clientSocket,"salve",5,0);
-// 		sleep(2);
-// 	}
-// 	close(test.clientSocket);
-// }

@@ -140,12 +140,56 @@ void trafficIntersection::secondaryRoadRedLightInfraction(int sensorA, int senso
 	wiringPiISR(sensorB, INT_EDGE_FALLING,checkSecondaryRedLight);
 }
 
+void trafficIntersection::reportToServer(client theClient){
+	int* message = new(int[2]);
+	
+	if (this->useDefault){
+		message[0] = 1;
+		message[1] = mainRoadInfraction;
+		send(theClient.clientSocket,message,5,0);
+		std::this_thread::sleep_for(0.3s);
+
+		message[0] = 3;
+		message[1] = secondaryRoadInfraction;
+		send(theClient.clientSocket,message,5,0);
+		std::this_thread::sleep_for(0.3s);
+
+		message[0] = 5;
+		message[1] = velocityInfraction;
+		send(theClient.clientSocket,message,5,0);
+		std::this_thread::sleep_for(0.4s);
+		return;
+	}
+	message[0] = 2;
+	message[1] = mainRoadInfraction;
+	send(theClient.clientSocket,message,5,0);
+	std::this_thread::sleep_for(0.3s);
+	
+	message[0] = 4;
+	message[1] = secondaryRoadInfraction;
+	send(theClient.clientSocket,message,5,0);
+	std::this_thread::sleep_for(0.3s);
+
+	message[0] = 6;
+	message[1] = velocityInfraction;
+	send(theClient.clientSocket,message,5,0);
+	std::this_thread::sleep_for(0.4s);
+}
+
+
 void trafficIntersection::controlIntersection(){
 	char* theIP = "164.41.98.26";
 	std::string message;
-	client intersectionClient;
 
-	intersectionClient.init(8000,theIP);
+	int port;
+
+	if (this->useDefault){
+		port = 8000;
+	}else{
+		port = 9000;
+	}
+
+	client intersectionClient(port,theIP);
 
 	intersectionClient.connectClient();
 	this->listenButton(this->buttonOne);
@@ -165,24 +209,12 @@ void trafficIntersection::controlIntersection(){
 	
 	std::this_thread::sleep_for(5s);
 	for (int i = 0; i < 100; ++i){
-		// message = "A" + std::to_string(velocityInfraction);
-		// send(intersectionClient.clientSocket,static_cast<void*>(&message),5,0);
-
-		// message = "B" + std::to_string(mainRoadInfraction);
-		// send(intersectionClient.clientSocket,static_cast<void*>(&message),5,0);
-
-		message = "INFR" + std::to_string(mainRoadInfraction);
-		std::cout <<"message: " << message << std::endl;
-		void* help = &mainRoadInfraction;
 		
-		send(intersectionClient.clientSocket,help,5,0);
-		
-		std::cout << "Start new iteration" << std::endl;
-		std::cout << "Main Road Infraction:" << mainRoadInfraction <<std::endl;
-		std::cout << "Secondary Road Infraction:" << secondaryRoadInfraction <<std::endl;
-		std::cout << "Total Infraction:" << totalInfraction <<std::endl;
-
-		
+		this->reportToServer(intersectionClient);
+		// std::cout << "Start new iteration" << std::endl;
+		// std::cout << "Main Road Infraction:" << mainRoadInfraction <<std::endl;
+		// std::cout << "Secondary Road Infraction:" << secondaryRoadInfraction <<std::endl;
+		// std::cout << "Total Infraction:" << totalInfraction <<std::endl;
 
 		this->theSemaphore.changeStates(this->useDefault,0);//green 		red
 		roadStatus = SECONDARY_ROAD_RED;
@@ -204,7 +236,7 @@ void trafficIntersection::controlIntersection(){
 
 		this->theSemaphore.changeStates(this->useDefault,2);//red 		red
 		roadStatus = BOTH_ROAD_RED;
-		std::this_thread::sleep_for(1s);
+
 	}
 	close(intersectionClient.clientSocket);
 

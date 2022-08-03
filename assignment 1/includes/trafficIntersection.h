@@ -54,6 +54,7 @@ public:
 	void controlIntersection();
 	void mainRoadRedLightInfraction(int sensorA, int sensorB);
 	void secondaryRoadRedLightInfraction(int sensorA, int sensorB);
+	void reportToServer(client theClient);
 
 };
 
