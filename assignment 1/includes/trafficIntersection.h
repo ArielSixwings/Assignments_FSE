@@ -11,6 +11,8 @@
 #define MAIN_ROAD_RED 20
 #define SECONDARY_ROAD_RED 10
 
+static int* message;
+
 static bool usedSSH = false;
 static int roadStatus = 0;
 static float velocity = 0.0;

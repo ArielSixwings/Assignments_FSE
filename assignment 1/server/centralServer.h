@@ -11,10 +11,27 @@
 #include <chrono>
 #include <thread>
 
+static int option = 10;
+static int INTERSECTION_1_mainRoadRedInfraction = 0;
+static int INTERSECTION_1_secondaryRoadRedInfraction = 0;
+static int INTERSECTION_1_velocityInfraction = 0;
+
+static int INTERSECTION_2_mainRoadRedInfraction = 0;
+static int INTERSECTION_2_secondaryRoadRedInfraction = 0;
+static int INTERSECTION_2_velocityInfraction = 0;
+
+static int INTERSECTION_3_mainRoadRedInfraction = 0;
+static int INTERSECTION_3_secondaryRoadRedInfraction = 0;
+static int INTERSECTION_3_velocityInfraction = 0;
+
+static int INTERSECTION_4_mainRoadRedInfraction = 0;
+static int INTERSECTION_4_secondaryRoadRedInfraction = 0;
+static int INTERSECTION_4_velocityInfraction;
 
 class eventHandler : public tcpProtocol {
 public:
 
+	int theClientSocket;
 	int serverSocket;
 	
 	eventHandler(int thePort);
@@ -23,6 +40,10 @@ public:
 	bool stablishConnetion();
 	void handleClient(int socketCliente);
 	bool resetTimes();
+	void setEmergencyMode();
+	void setNightMode();
+	void closeServer();
+	void sendCloseMensage();
 
 };
 

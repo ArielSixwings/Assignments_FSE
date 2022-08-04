@@ -52,6 +52,17 @@ void checkSecondaryRedLight(){
 	}
 }
 
+void recievCommands(client theClient){
+	message = new(int);
+	int recievedLength;
+
+
+	if((recievedLength = recv(theClient.clientSocket, message, 16, 0)) < 0){
+		std::cout << "Error at recv" << std::endl;
+	}
+
+}
+
 trafficIntersection::trafficIntersection(bool defaultUse,bool rasp){
 
 	usedSSH = rasp;
@@ -160,7 +171,7 @@ void trafficIntersection::secondaryRoadRedLightInfraction(int sensorA, int senso
 }
 
 void trafficIntersection::reportToServer(client theClient){
-	int* message = new(int[2]);
+	message = new(int[2]);
 	
 	if (this->useDefault){
 		if (usedSSH){
@@ -231,22 +242,35 @@ void trafficIntersection::reportToServer(client theClient){
 	std::this_thread::sleep_for(0.4s);	
 }
 
+void setIp(char* theIP){
+	theIP[0] = '1';
+	theIP[1] = '6';
+	theIP[2] = '4';
+	theIP[3] = '.';
+	theIP[4] = '4';
+	theIP[5] = '1';
+	theIP[6] = '.';
+	theIP[7] = '9';
+	theIP[8] = '8';
+	theIP[9] = '.';
+	theIP[10] = '1';
+	theIP[11] = '7';
+}
 
 void trafficIntersection::controlIntersection(){
-	char* rasp43 = "164.41.98.17";
-	char* rasp44 = "164.41.98.26";
-	char* theIP;
+	char* theIP = new(char[12]);
+	setIp(theIP);
+	
 	int port;
 
 	if (usedSSH){
-		theIP = rasp43;
 		if (this->useDefault){
 			port = 10021;
 		}else{
 			port = 10022;
 		}
 	}else{
-		theIP = rasp44;
+
 		if (this->useDefault){
 			port = 10023;
 		}else{
@@ -258,6 +282,9 @@ void trafficIntersection::controlIntersection(){
 	client intersectionClient(port,theIP);
 
 	intersectionClient.connectClient();
+
+	std::thread Listener1(recievCommands,intersectionClient);
+
 	this->listenButton(this->buttonOne);
 	this->listenButton(this->buttonTwo);
 
@@ -275,6 +302,23 @@ void trafficIntersection::controlIntersection(){
 	
 	std::this_thread::sleep_for(5s);
 	for (int i = 0; i < 100; ++i){
+		switch(message[0]) {
+			case 2399:
+				std::cout << "Setting emergencyMode: " << std::endl;
+				this->emergencyMode();
+			break;
+
+			case 4788:
+				std::cout << "Setting nightMode: " << std::endl;
+				this->nightMode();
+			break;
+
+			case 7777:
+				std::cout << "Closing intersection: " << std::endl;
+				send(intersectionClient.clientSocket,message,5,0);
+				return;
+			break;
+		}	
 		
 		this->reportToServer(intersectionClient);
 
