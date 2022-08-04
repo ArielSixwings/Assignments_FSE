@@ -110,6 +110,18 @@ trafficIntersection::trafficIntersection(bool defaultUse,bool rasp){
 	this->theSemaphore.setOutputs(false);
 }
 
+void trafficIntersection::nightMode(){
+	for (int i = 0; i < 100; ++i){
+		this->theSemaphore.changeStates(this->useDefault,5);//off 		off
+		std::this_thread::sleep_for(0.5s);
+		this->theSemaphore.changeStates(this->useDefault,6);//yellow	yellow
+	}
+}
+
+void trafficIntersection::emergencyMode(){
+	this->theSemaphore.changeStates(this->useDefault,0);//green 		red
+}
+
 void trafficIntersection::getVelocity(int sensorA, int sensorB){
 	wiringPiISR(sensorA, INT_EDGE_FALLING,getTimeStart);
 	wiringPiISR(sensorB, INT_EDGE_FALLING,getTimeEnd);

@@ -43,23 +43,41 @@ void eventHandler::handleClient(int socketCliente) {
 	}
 	switch(buffer[0]) {
 		case 1:
-			std::cout << "Run red light infraction on main road at intersection 3: " << buffer[1] << std::endl;
+			std::cout << "Run red light infraction on main road at intersection 1: " << buffer[1] << std::endl;
 			break;
 		case 3:
-			std::cout << "Run red light infraction on secondary road at intersection 3: " << buffer[1] << std::endl;
+			std::cout << "Run red light infraction on secondary road at intersection 1: " << buffer[1] << std::endl;
 			break;
 		case 5:
-			std::cout << "Number of Velocity infractions at intersection 3: " << buffer[1] << std::endl;
+			std::cout << "Number of Velocity infractions at intersection 1: " << buffer[1] << std::endl;
 			break;
 		case 2:
-			std::cout << "Run red light infraction on main road at intersection 4: " << buffer[1] << std::endl;
+			std::cout << "Run red light infraction on main road at intersection 2: " << buffer[1] << std::endl;
 			break;
 		case 4:
-			std::cout << "Run red light infraction on secondary road at intersection 4: " << buffer[1] << std::endl;
+			std::cout << "Run red light infraction on secondary road at intersection 2: " << buffer[1] << std::endl;
 			break;
 		case 6:
+			std::cout << "Number of Velocity infractions at intersection 2: " << buffer[1] << std::endl;
+			break;
+		case 10:
+			std::cout << "Run red light infraction on main road at intersection 3: " << buffer[1] << std::endl;
+			break;
+		case 30:
+			std::cout << "Run red light infraction on secondary road at intersection 3: " << buffer[1] << std::endl;
+			break;
+		case 50:
+			std::cout << "Number of Velocity infractions at intersection 3: " << buffer[1] << std::endl;
+			break;
+		case 20:
+			std::cout << "Run red light infraction on main road at intersection 4: " << buffer[1] << std::endl;
+			break;
+		case 40:
+			std::cout << "Run red light infraction on secondary road at intersection 4: " << buffer[1] << std::endl;
+			break;
+		case 60:
 			std::cout << "Number of Velocity infractions at intersection 4: " << buffer[1] << std::endl;
-			break;			
+			break;						
 	default:
 		std::cout << "UnKnow client" << std::endl;
 	}
