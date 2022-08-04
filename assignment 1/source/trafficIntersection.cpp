@@ -53,14 +53,11 @@ void checkSecondaryRedLight(){
 }
 
 void recievCommands(client theClient){
-	message = new(int);
+	recievedMessage = new(int);
 	int recievedLength;
-
-
-	if((recievedLength = recv(theClient.clientSocket, message, 16, 0)) < 0){
+	if((recievedLength = recv(theClient.clientSocket, recievedMessage, 5, 0)) < 0){
 		std::cout << "Error at recv" << std::endl;
 	}
-
 }
 
 trafficIntersection::trafficIntersection(bool defaultUse,bool rasp){
@@ -122,7 +119,7 @@ trafficIntersection::trafficIntersection(bool defaultUse,bool rasp){
 }
 
 void trafficIntersection::nightMode(){
-	for (int i = 0; i < 100; ++i){
+	for (int i = 0; i < 100 and *recievedMessage == 4788; ++i){
 		this->theSemaphore.changeStates(this->useDefault,5);//off 		off
 		std::this_thread::sleep_for(0.5s);
 		this->theSemaphore.changeStates(this->useDefault,6);//yellow	yellow
@@ -131,6 +128,10 @@ void trafficIntersection::nightMode(){
 
 void trafficIntersection::emergencyMode(){
 	this->theSemaphore.changeStates(this->useDefault,0);//green 		red
+	while(*recievedMessage == 4788){
+		std::this_thread::sleep_for(1s);
+		std::cout << "Emergency Mode" << std::endl;
+	}
 }
 
 void trafficIntersection::getVelocity(int sensorA, int sensorB){
@@ -242,25 +243,24 @@ void trafficIntersection::reportToServer(client theClient){
 	std::this_thread::sleep_for(0.4s);	
 }
 
-void setIp(char* theIP){
-	theIP[0] = '1';
-	theIP[1] = '6';
-	theIP[2] = '4';
-	theIP[3] = '.';
-	theIP[4] = '4';
-	theIP[5] = '1';
-	theIP[6] = '.';
-	theIP[7] = '9';
-	theIP[8] = '8';
-	theIP[9] = '.';
-	theIP[10] = '1';
-	theIP[11] = '7';
-}
+// void setIp(char* theIP){
+// 	theIP[0] = '1';
+// 	theIP[1] = '6';
+// 	theIP[2] = '4';
+// 	theIP[3] = '.';
+// 	theIP[4] = '4';
+// 	theIP[5] = '1';
+// 	theIP[6] = '.';
+// 	theIP[7] = '9';
+// 	theIP[8] = '8';
+// 	theIP[9] = '.';
+// 	theIP[10] = '1';
+// 	theIP[11] = '7';
+// 	theIP[12] = '\0';
+// }
 
 void trafficIntersection::controlIntersection(){
-	char* theIP = new(char[12]);
-	setIp(theIP);
-	
+
 	int port;
 
 	if (usedSSH){
@@ -270,7 +270,6 @@ void trafficIntersection::controlIntersection(){
 			port = 10022;
 		}
 	}else{
-
 		if (this->useDefault){
 			port = 10023;
 		}else{
@@ -279,7 +278,8 @@ void trafficIntersection::controlIntersection(){
 	}
 
 
-	client intersectionClient(port,theIP);
+	std::string theIp = "164.41.98.17";
+	client intersectionClient(port,theIp);
 
 	intersectionClient.connectClient();
 
@@ -302,7 +302,7 @@ void trafficIntersection::controlIntersection(){
 	
 	std::this_thread::sleep_for(5s);
 	for (int i = 0; i < 100; ++i){
-		switch(message[0]) {
+		switch(*recievedMessage) {
 			case 2399:
 				std::cout << "Setting emergencyMode: " << std::endl;
 				this->emergencyMode();
@@ -315,7 +315,7 @@ void trafficIntersection::controlIntersection(){
 
 			case 7777:
 				std::cout << "Closing intersection: " << std::endl;
-				send(intersectionClient.clientSocket,message,5,0);
+				send(intersectionClient.clientSocket,recievedMessage,5,0);
 				return;
 			break;
 		}	

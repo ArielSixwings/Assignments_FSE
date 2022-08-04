@@ -15,10 +15,10 @@
 class client : public tcpProtocol{
 
 public:
-	char *serverIp;
+	std::string serverIp;
 	int clientSocket;
 	
-	client(int thePort,char *ipServer);
+	client(int thePort,std::string ipServer);
 	void connectClient();
 };
 

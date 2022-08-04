@@ -35,19 +35,19 @@ bool eventHandler::openServer(){
 
 void eventHandler::sendCloseMensage(){
 	int* message = new(int);
-	message[0] = 7777;
+	*message = 7777;
 	send(this->theClientSocket, message, 5, 0);
 }
 
 void eventHandler::setEmergencyMode(){
 	int* message = new(int);
-	message[0] = 2399;
+	*message = 2399;
 	send(this->theClientSocket, message, 5, 0);
 }
 
 void eventHandler::setNightMode(){
 	int* message = new(int);
-	message[0] = 4788;
+	*message = 4788;
 	send(this->theClientSocket, message, 5, 0);
 }
 
