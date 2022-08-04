@@ -11,7 +11,10 @@
 #include <chrono>
 #include <thread>
 
+static int message = 3333;
 static int option = 10;
+
+
 static int INTERSECTION_1_mainRoadRedInfraction = 0;
 static int INTERSECTION_1_secondaryRoadRedInfraction = 0;
 static int INTERSECTION_1_velocityInfraction = 0;

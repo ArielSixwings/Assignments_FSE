@@ -40,7 +40,6 @@ void getTimeEnd(){
 	checkMainRedLight();
 }
 
-
 void checkSecondaryRedLight(){
 	if ((roadStatus == SECONDARY_ROAD_RED) or (roadStatus == BOTH_ROAD_RED)){
 		if (usedSSH){
@@ -49,14 +48,6 @@ void checkSecondaryRedLight(){
 		}
 		RASPB_secondaryRoadInfraction++;
 		// system("cvlc alarm.mp3");
-	}
-}
-
-void recievCommands(client theClient){
-	recievedMessage = new(int);
-	int recievedLength;
-	if((recievedLength = recv(theClient.clientSocket, recievedMessage, 5, 0)) < 0){
-		std::cout << "Error at recv" << std::endl;
 	}
 }
 
@@ -119,16 +110,17 @@ trafficIntersection::trafficIntersection(bool defaultUse,bool rasp){
 }
 
 void trafficIntersection::nightMode(){
-	for (int i = 0; i < 100 and *recievedMessage == 4788; ++i){
-		this->theSemaphore.changeStates(this->useDefault,5);//off 		off
-		std::this_thread::sleep_for(0.5s);
+	for (int i = 0; i < 100 and recievedMessage == 4788; ++i){
 		this->theSemaphore.changeStates(this->useDefault,6);//yellow	yellow
+		std::this_thread::sleep_for(1s);
+		this->theSemaphore.changeStates(this->useDefault,5);//off 		off
 	}
+	std::cout << "out of night mode" << recievedMessage << std::endl;
 }
 
 void trafficIntersection::emergencyMode(){
 	this->theSemaphore.changeStates(this->useDefault,0);//green 		red
-	while(*recievedMessage == 4788){
+	while(recievedMessage == 4788){
 		std::this_thread::sleep_for(1s);
 		std::cout << "Emergency Mode" << std::endl;
 	}
@@ -172,92 +164,68 @@ void trafficIntersection::secondaryRoadRedLightInfraction(int sensorA, int senso
 }
 
 void trafficIntersection::reportToServer(client theClient){
-	message = new(int[2]);
+	message = new(int[4]);
 	
 	if (this->useDefault){
 		if (usedSSH){
 			message[0] = 1;
 			message[1] = RASPA_mainRoadInfraction;
+			message[2] = RASPA_secondaryRoadInfraction;
+			message[3] = RASPA_VelocityInfraction;
+			
 			send(theClient.clientSocket,message,5,0);
-			std::this_thread::sleep_for(0.3s);
-
-			message[0] = 3;
-			message[1] = RASPA_secondaryRoadInfraction;
-			send(theClient.clientSocket,message,5,0);
-			std::this_thread::sleep_for(0.3s);
-
-			message[0] = 5;
-			message[1] = RASPA_VelocityInfraction;
-			send(theClient.clientSocket,message,5,0);
-			std::this_thread::sleep_for(0.4s);
+			
+			std::this_thread::sleep_for(1s);
+			
+			recv(theClient.clientSocket, &recievedMessage, 16, 0);
+			std::cout << "Recieve message from sever 1" << std::endl;
 			return;
 		}
 
 		message[0] = 10;
 		message[1] = RASPB_mainRoadInfraction;
+		message[2] = RASPB_secondaryRoadInfraction;
+		message[3] = RASPB_VelocityInfraction;
+		
 		send(theClient.clientSocket,message,5,0);
-		std::this_thread::sleep_for(0.3s);
+		
+		std::this_thread::sleep_for(1s);
 
-		message[0] = 30;
-		message[1] = RASPB_secondaryRoadInfraction;
-		send(theClient.clientSocket,message,5,0);
-		std::this_thread::sleep_for(0.3s);
-
-		message[0] = 50;
-		message[1] = RASPB_VelocityInfraction;
-		send(theClient.clientSocket,message,5,0);
-		std::this_thread::sleep_for(0.4s);
+		recv(theClient.clientSocket, &recievedMessage, 16, 0);
+		std::cout << "Recieve message from sever 3" << std::endl;
 		return;		
 	}
 
 	if (usedSSH){
 		message[0] = 2;
 		message[1] = RASPA_mainRoadInfraction;
-		send(theClient.clientSocket,message,5,0);
-		std::this_thread::sleep_for(0.3s);
+		message[2] = RASPA_secondaryRoadInfraction;
+		message[3] = RASPA_VelocityInfraction;
 		
-		message[0] = 4;
-		message[1] = RASPA_secondaryRoadInfraction;
 		send(theClient.clientSocket,message,5,0);
-		std::this_thread::sleep_for(0.3s);
+		
+		std::this_thread::sleep_for(1s);
+		
 
-		message[0] = 6;
-		message[1] = RASPA_VelocityInfraction;
-		send(theClient.clientSocket,message,5,0);
-		std::this_thread::sleep_for(0.4s);
+
+		recv(theClient.clientSocket, &recievedMessage, 16, 0);
+		std::cout << "Recieve message from sever 2" << std::endl;
 		return;
 	}
 	message[0] = 20;
 	message[1] = RASPB_mainRoadInfraction;
+	message[2] = RASPB_secondaryRoadInfraction;
+	message[3] = RASPB_VelocityInfraction;
+	
 	send(theClient.clientSocket,message,5,0);
-	std::this_thread::sleep_for(0.3s);
+	
+	std::this_thread::sleep_for(1s);
 		
-	message[0] = 40;
-	message[1] = RASPB_secondaryRoadInfraction;
-	send(theClient.clientSocket,message,5,0);
-	std::this_thread::sleep_for(0.3s);
 
-	message[0] = 60;
-	message[1] = RASPB_VelocityInfraction;
-	send(theClient.clientSocket,message,5,0);
-	std::this_thread::sleep_for(0.4s);	
+
+	recv(theClient.clientSocket, &recievedMessage, 16, 0);
+	std::cout << "Recieve message from sever 4" << std::endl;
 }
-
-// void setIp(char* theIP){
-// 	theIP[0] = '1';
-// 	theIP[1] = '6';
-// 	theIP[2] = '4';
-// 	theIP[3] = '.';
-// 	theIP[4] = '4';
-// 	theIP[5] = '1';
-// 	theIP[6] = '.';
-// 	theIP[7] = '9';
-// 	theIP[8] = '8';
-// 	theIP[9] = '.';
-// 	theIP[10] = '1';
-// 	theIP[11] = '7';
-// 	theIP[12] = '\0';
-// }
 
 void trafficIntersection::controlIntersection(){
 
@@ -283,8 +251,6 @@ void trafficIntersection::controlIntersection(){
 
 	intersectionClient.connectClient();
 
-	std::thread Listener1(recievCommands,intersectionClient);
-
 	this->listenButton(this->buttonOne);
 	this->listenButton(this->buttonTwo);
 
@@ -295,32 +261,33 @@ void trafficIntersection::controlIntersection(){
 	this->getVelocity(this->velocityTwoA,this->velocityTwoB);
 
 	this->secondaryRoadRedLightInfraction(this->carSensorOne,this->carSensorTwo);
-
-	// this->getVelocity(this->velocityTwoA,this->velocityTwoB);
 	
 	this->theSemaphore.changeStates(this->useDefault,5);//off 		off
 	
 	std::this_thread::sleep_for(5s);
 	for (int i = 0; i < 100; ++i){
-		switch(*recievedMessage) {
-			case 2399:
-				std::cout << "Setting emergencyMode: " << std::endl;
-				this->emergencyMode();
-			break;
 
-			case 4788:
-				std::cout << "Setting nightMode: " << std::endl;
-				this->nightMode();
-			break;
+		std::cout << "recievedMessage: "<< recievedMessage << std::endl;
+		if (recievedMessage == 2399){
+			std::cout << "Setting emergencyMode: " << std::endl;
+			this->emergencyMode();
+			
+		}
 
-			case 7777:
-				std::cout << "Closing intersection: " << std::endl;
-				send(intersectionClient.clientSocket,recievedMessage,5,0);
-				return;
-			break;
-		}	
-		
-		this->reportToServer(intersectionClient);
+		if(recievedMessage == 4788){
+			std::cout << "Setting nightMode: " << std::endl;
+			while(recievedMessage == 4788){
+				this->theSemaphore.changeStates(this->useDefault,6);//yellow	yellow
+				std::this_thread::sleep_for(1s);
+				this->theSemaphore.changeStates(this->useDefault,5);//off 		off
+			}
+		}
+
+		if(recievedMessage == 7777){
+			std::cout << "Closing intersection: " << std::endl;
+			send(intersectionClient.clientSocket,&recievedMessage,5,0);
+			return;
+		}
 
 		this->theSemaphore.changeStates(this->useDefault,0);//green 		red
 		roadStatus = SECONDARY_ROAD_RED;
@@ -343,6 +310,7 @@ void trafficIntersection::controlIntersection(){
 		this->theSemaphore.changeStates(this->useDefault,2);//red 		red
 		roadStatus = BOTH_ROAD_RED;
 
+		this->reportToServer(intersectionClient);
 	}
 	close(intersectionClient.clientSocket);
 

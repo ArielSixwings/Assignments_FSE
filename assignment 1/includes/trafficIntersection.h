@@ -12,7 +12,7 @@
 #define SECONDARY_ROAD_RED 10
 
 static int* message;
-static int* recievedMessage;
+static int recievedMessage;
 
 static bool usedSSH = false;
 static int roadStatus = 0;

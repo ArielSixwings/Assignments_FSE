@@ -75,7 +75,7 @@ void semaphore::changeStates(bool useDeafault, int state){
 	digitalWrite(this->theMap[6], this->states[state][2]);
 
 	digitalWrite(this->theMap[2],  this->states[state][3]);
-	digitalWrite(this->theMap[3], this->states[state][4]);
+	digitalWrite(this->theMap[3],  this->states[state][4]);
 	digitalWrite(this->theMap[11], this->states[state][5]);
 
 }

@@ -34,21 +34,19 @@ bool eventHandler::openServer(){
 }
 
 void eventHandler::sendCloseMensage(){
-	int* message = new(int);
-	*message = 7777;
-	send(this->theClientSocket, message, 5, 0);
+	message = 7777;
+	send(this->theClientSocket, &message, sizeof(message), MSG_CONFIRM);
 }
 
 void eventHandler::setEmergencyMode(){
-	int* message = new(int);
-	*message = 2399;
-	send(this->theClientSocket, message, 5, 0);
+	message = 2399;
+	send(this->theClientSocket, &message, sizeof(message), MSG_CONFIRM);
 }
 
 void eventHandler::setNightMode(){
-	int* message = new(int);
-	*message = 4788;
-	send(this->theClientSocket, message, 5, 0);
+	message = 4788;
+	std::cout<< "at function setNightMode: " << message << std::endl;
+	send(this->theClientSocket, &message, sizeof(message), MSG_CONFIRM);
 }
 
 
@@ -61,42 +59,53 @@ void eventHandler::handleClient(int socketClient) {
 		switch(buffer[0]) {
 			case 1:
 				INTERSECTION_1_mainRoadRedInfraction += buffer[1];
+				INTERSECTION_1_secondaryRoadRedInfraction += buffer[2];
+				INTERSECTION_1_velocityInfraction += buffer[3];
+				
 				break;
-			case 3:
-				INTERSECTION_1_secondaryRoadRedInfraction += buffer[1];
-				break;
-			case 5:
-				INTERSECTION_1_velocityInfraction += buffer[1];
-				break;
+
 			case 2:
 				INTERSECTION_2_mainRoadRedInfraction += buffer[1];
+				INTERSECTION_2_secondaryRoadRedInfraction += buffer[2];
+				INTERSECTION_2_velocityInfraction += buffer[3];
+				
 				break;
-			case 4:
-				INTERSECTION_2_secondaryRoadRedInfraction += buffer[1];
-				break;
-			case 6:
-				INTERSECTION_2_velocityInfraction += buffer[1];
-				break;
+
 			case 10:
 				INTERSECTION_3_mainRoadRedInfraction += buffer[1];
-				break;
-			case 30:
-				INTERSECTION_3_secondaryRoadRedInfraction += buffer[1];
-				break;
-			case 50:
-				INTERSECTION_3_velocityInfraction += buffer[1];
+				INTERSECTION_3_secondaryRoadRedInfraction += buffer[2];
+				INTERSECTION_3_velocityInfraction += buffer[3];
+				
 				break;
 			case 20:
 				INTERSECTION_4_mainRoadRedInfraction += buffer[1];
+				INTERSECTION_4_secondaryRoadRedInfraction += buffer[2];
+				INTERSECTION_4_velocityInfraction += buffer[3];
+
 				break;
-			case 40:
-				INTERSECTION_4_secondaryRoadRedInfraction += buffer[1];
-				break;
-			case 60:
-				INTERSECTION_4_velocityInfraction += buffer[1];
-				break;						
+					
 		default:
 			std::cout << "UnKnow client" << std::endl;
+		}
+		if (this->port == 10021 ){
+			std::cout << "Send message to client 1" << std::endl;
+			send(socketClient,&message,5,0);
+			
+		}
+		if (this->port == 10022 ){
+			std::cout << "Send message to client 2" << std::endl;
+			send(socketClient,&message,5,0);
+		
+		}
+		if (this->port == 10023 ){
+			std::cout << "Send message to client 3" << std::endl;
+			send(socketClient,&message,5,0);
+			
+		}
+		if (this->port == 10024){
+			std::cout << "Send message to client 4" << std::endl;
+			send(socketClient,&message,5,0);
+			
 		}
 	}
 }
@@ -144,26 +153,6 @@ void closeAll(  eventHandler Handler_One,
 	Handler_Four.sendCloseMensage();
 }
 
-void allEmergencyMode(  eventHandler Handler_One,
-					eventHandler Handler_Two,
-					eventHandler Handler_Three,
-					eventHandler Handler_Four){
-	Handler_One.setEmergencyMode();
-	Handler_Two.setEmergencyMode();
-	Handler_Three.setEmergencyMode();
-	Handler_Four.setEmergencyMode();
-}
-
-void allNightMode(  eventHandler Handler_One,
-					eventHandler Handler_Two,
-					eventHandler Handler_Three,
-					eventHandler Handler_Four){
-	Handler_One.setNightMode();
-	Handler_Two.setNightMode();
-	Handler_Three.setNightMode();
-	Handler_Four.setNightMode();
-}
-
 void presentData(){
 	std::cout << "====================================================================================" << std::endl;
 	std::cout << "=                 Main Road red Light  === Secondary Road red Light  === Velocity  ="<<std::endl;
@@ -198,9 +187,10 @@ int main(){
 
 		std::cout << "Use 0 to close the server" << std::endl;
 		std::cout << "Use 1 to close the server and all the intersections" << std::endl;
-		std::cout << "Use 2 to set emergency mode at all intersections" << std::endl; 
-		std::cout << "Use 3 to set night mode at all intersections" << std::endl;
+		std::cout << "Use 2 to set EMERGENCY mode at all intersections" << std::endl; 
+		std::cout << "Use 3 to set NIGHT mode at all intersections" << std::endl;
 		std::cout << "Use 4 to present data from intersections" << std::endl;
+		std::cout << "Use 5 to set NORMAL mode at all intersections" << std::endl;
 
 		std::cin >> option;
 
@@ -232,14 +222,14 @@ int main(){
 			case 2:
 				std::cout << "Setting all intersetions to emergency mode: " << std::endl;
 				
-				allEmergencyMode(intersection1,intersection2,intersection3,intersection4);
+				message = 2399;
 				
 			break;
 
 			case 3:
 				std::cout << "Setting all intersetions to night mode: " << std::endl;
 				
-				allNightMode(intersection1,intersection2,intersection3,intersection4);
+				message = 4788;
 				
 			break;
 
