@@ -33,22 +33,6 @@ bool eventHandler::openServer(){
 	return true;
 }
 
-void eventHandler::sendCloseMensage(){
-	message = 7777;
-	send(this->theClientSocket, &message, sizeof(message), MSG_CONFIRM);
-}
-
-void eventHandler::setEmergencyMode(){
-	message = 2399;
-	send(this->theClientSocket, &message, sizeof(message), MSG_CONFIRM);
-}
-
-void eventHandler::setNightMode(){
-	message = 4788;
-	std::cout<< "at function setNightMode: " << message << std::endl;
-	send(this->theClientSocket, &message, sizeof(message), MSG_CONFIRM);
-}
-
 
 void eventHandler::handleClient(int socketClient) {
 	int* buffer = new(int[16]);
@@ -214,7 +198,7 @@ int main(){
 				intersection2.closeServer();
 				intersection3.closeServer();
 				intersection4.closeServer();
-				closeAll(intersection1,intersection2,intersection3,intersection4);
+				message = 7777;
 				
 				return 0;
 			break;
