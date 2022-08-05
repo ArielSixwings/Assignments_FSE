@@ -43,10 +43,7 @@ public:
 	bool stablishConnetion();
 	void handleClient(int socketCliente);
 	bool resetTimes();
-	void setEmergencyMode();
-	void setNightMode();
 	void closeServer();
-	void sendCloseMensage();
 
 };
 

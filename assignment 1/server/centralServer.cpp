@@ -127,16 +127,6 @@ void work(eventHandler theHandler){
 	theHandler.stablishConnetion();
 }
 
-void closeAll(  eventHandler Handler_One,
-					eventHandler Handler_Two,
-					eventHandler Handler_Three,
-					eventHandler Handler_Four){
-	Handler_One.sendCloseMensage();
-	Handler_Two.sendCloseMensage();
-	Handler_Three.sendCloseMensage();
-	Handler_Four.sendCloseMensage();
-}
-
 void presentData(){
 	std::cout << "====================================================================================" << std::endl;
 	std::cout << "=                 Main Road red Light  === Secondary Road red Light  === Velocity  ="<<std::endl;
