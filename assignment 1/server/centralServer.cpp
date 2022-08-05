@@ -127,6 +127,7 @@ void work(eventHandler theHandler){
 	theHandler.stablishConnetion();
 }
 
+
 void presentData(){
 	std::cout << "====================================================================================" << std::endl;
 	std::cout << "=                 Main Road red Light  === Secondary Road red Light  === Velocity  ="<<std::endl;
@@ -176,7 +177,6 @@ int main(){
 				intersection2.closeServer();
 				intersection3.closeServer();
 				intersection4.closeServer();
-				closeAll(intersection1,intersection2,intersection3,intersection4);
 				
 				return 0;
 			break;
