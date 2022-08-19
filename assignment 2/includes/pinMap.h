@@ -2,7 +2,6 @@
 #define PINMAP_H
 
 #include <iostream>
-#include <wiringPi.h>
 
 class pinMap{
 	
