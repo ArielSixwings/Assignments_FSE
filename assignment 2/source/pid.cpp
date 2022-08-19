@@ -5,9 +5,9 @@ pid::pid(float refTemp){
 	
 	this->referenceTemperature = refTemp;
 
-	// this->proportionalController = kp;
-	// this->integralController = ki;
-	// this->derivativeController = kd;
+	this->proportionalController = 30.0;
+	this->integralController = 0.2;
+	this->derivativeController = 400.0;
 
 	this->period = 1.0;
 }

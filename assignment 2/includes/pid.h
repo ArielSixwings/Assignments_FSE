@@ -9,7 +9,7 @@ static float MINCONTROL = -100.0;
 
 class pid{
 
-public:
+private:
 	float totalError = 0.0;
 	float previusError = 0.0;
 	float referenceTemperature = 0.0;
@@ -21,11 +21,11 @@ public:
 
 	float period = 1.0;
 
+public:
 	pid(float refTemp);
 	pid(float refTemp, float kp, float ki, float kd, float T);
 
 	float controlTemperature(float inputTemperature);
-private:
 	float boundedValue(float candidate);
 };
 

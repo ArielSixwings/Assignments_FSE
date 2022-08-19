@@ -12,8 +12,9 @@ int main(int argc, char const *argv[]){
 	
 	for (int i = 0; i < 80; ++i){
 		output = test.controlTemperature(i);
-		std::cout <<"output: " << output << std::endl;
-		std::this_thread::sleep_for(1s);
+		std::cout <<"output: " << output;
+		std::cout <<"  temp : " << i << std::endl;
+		std::this_thread::sleep_for(0.5s);
 	}
 		
 	return 0;
