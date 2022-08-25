@@ -6,6 +6,9 @@ uart::uart(){
 
 	this->openUart0 = false;
 	this->openUart1 = false;
+
+	this->readbuffer = new unsigned char[9];
+	this->sendbuffer = new unsigned char[9];
 }
 
 uart::~uart(){
@@ -55,7 +58,7 @@ bool uart::defaultOptions(int theuart){
 		tcgetattr(this->uart1_filestream, &options);	
 	}
 
-	options.c_cflag = B115200 | CS8 | CLOCAL | CREAD;
+	options.c_cflag = B9600 | CS8 | CLOCAL | CREAD;
 	options.c_iflag = IGNPAR;
 	options.c_oflag = 0;
 	options.c_lflag = 0;
@@ -82,19 +85,19 @@ bool uart::sendMessage(int theuart,unsigned char *message){
 		return false;
 	}
 
-	// this->buffer = message;
+	// this->sendbuffer = message;
 	return true;
 }
 
 bool uart::readMessage(int theuart){
 	int count;
 	
-	if (theuart == 0) count = read(this->uart0_filestream,(void*)this->buffer.c_str(),100);
-	if (theuart == 1) count = read(this->uart1_filestream,(void*)this->buffer.c_str(),100); 
+	if (theuart == 0) count = read(this->uart0_filestream,(void*)this->readbuffer,100);
+	if (theuart == 1) count = read(this->uart1_filestream,(void*)this->readbuffer,100); 
 
 	if (count < 0){
 		std::cout << "Failed to read data" << std::endl;
-		std::cout << "buffer: " << this->buffer << std::endl;
+		std::cout << "readbuffer: " << this->readbuffer << std::endl;
 		return false;
 	}
 
@@ -103,7 +106,7 @@ bool uart::readMessage(int theuart){
 		return true;
 	}
 
-	std::cout<<"RECEIVED MESSAGE: " << this->buffer << std::endl;
+	std::cout<<"RECEIVED MESSAGE: " << this->readbuffer << std::endl;
 	return true;
 }
 
@@ -119,14 +122,16 @@ void uart::getTemperature(int theuart){
 	memcpy(&msg[7],&crc,sizeof(crc));
 
 	for (int i = 0; i < 9; ++i){
-		printf("%2X ",msg[i]);		
+		printf("%X ",msg[i]);
 	}
 
 	std::cout << std::endl;
 
-	this->buffer = msg;
-	write(this->uart0_filestream,this->buffer,9);
-
-	// this->sendMessage(theuart,msg);
-	this->readMessage(theuart);
+	this->sendbuffer = msg;
+	
+	write(this->uart0_filestream,this->sendbuffer,9);
+	read(this->uart0_filestream,this->readbuffer,9);
+	
+	std::cout << this->readbuffer << std::endl;
+	// this->readMessage(theuart);
 }

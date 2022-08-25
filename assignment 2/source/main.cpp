@@ -20,8 +20,8 @@ int main(int argc, char const *argv[]){
 		
 
 	uart test;
-	test.openUart(0);
 	test.defaultOptions(0);
+	test.openUart(0);
 
 	// std::string message = "salve salve familia";
 	

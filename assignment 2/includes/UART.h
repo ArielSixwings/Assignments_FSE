@@ -33,7 +33,8 @@ private:
 	bool openUart0;
 	bool openUart1;
 
-	unsigned char* buffer;
+	unsigned char* readbuffer;
+	unsigned char* sendbuffer;
 
 public:
 	uart();
