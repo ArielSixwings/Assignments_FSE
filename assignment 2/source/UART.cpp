@@ -68,22 +68,21 @@ bool uart::defaultOptions(int theuart){
 
 	tcflush(this->uart1_filestream, TCIFLUSH);
 	tcsetattr(this->uart1_filestream, TCSANOW, &options);
-	return true;	
+	return true;
 }
 
-bool uart::sendMessage(int theuart,std::string message){
+bool uart::sendMessage(int theuart,unsigned char *message){
 	int count;
-	// void* p_message = message;
 
-	if (theuart == 0) count = write(this->uart0_filestream, (void*)message.c_str(),message.length());
-	if (theuart == 1) count = write(this->uart1_filestream, (void*)message.c_str(),message.length());
+	if (theuart == 0) count = write(this->uart0_filestream,message,9);
+	if (theuart == 1) count = write(this->uart1_filestream,message,9);
 
 	if (count < 0){
 		std::cout << "Failed to send data" << std::endl;
 		return false;
 	}
 
-	this->buffer = message;
+	// this->buffer = message;
 	return true;
 }
 
@@ -95,7 +94,8 @@ bool uart::readMessage(int theuart){
 
 	if (count < 0){
 		std::cout << "Failed to read data" << std::endl;
-		return false;		
+		std::cout << "buffer: " << this->buffer << std::endl;
+		return false;
 	}
 
 	if (count == 0){
@@ -103,50 +103,30 @@ bool uart::readMessage(int theuart){
 		return true;
 	}
 
-	if (getCode(INTERNAL_TEMPERATURE) == this->buffer){
-		std::cout<<"Got temperature: " << std::endl;	
-	}
 	std::cout<<"RECEIVED MESSAGE: " << this->buffer << std::endl;
 	return true;
 }
 
-std::string uart::getCode(int code){
-	std::string message;
-	int index;
-	switch(code){
-		case INTERNAL_TEMPERATURE:
-		
-			message = ADDRESS;
-			message += GET;
-			message += INTERNAL_TEMP;
-			break;
-		
-		case REFERENCE_TEMPERATURE:
+void uart::getTemperature(int theuart){
+	unsigned char msg[9] = {ADDRESS, GET, INTERNAL_TEMP, 
+		REGISTRATION0, 
+		REGISTRATION1, 
+		REGISTRATION2, 
+		REGISTRATION3};
 
-			message += ADDRESS;
-			message += GET;
-			message += REFERENCE_TEMP;
-			break;
-		
-		default:
-			std::cout << "UnKnow option"<<std::endl;
+
+	uint16_t crc = computeCrc(msg,7);
+	memcpy(&msg[7],&crc,sizeof(crc));
+
+	for (int i = 0; i < 9; ++i){
+		printf("%2X ",msg[i]);		
 	}
 
-	message += REGISTRATION[0];
-	message += REGISTRATION[1];
-	message += REGISTRATION[2];
-	message += REGISTRATION[3];
+	std::cout << std::endl;
 
-	for (int i = 0; i < message.length(); ++i){
-		std::cout << std::hex << message[i];
-	}
+	this->buffer = msg;
+	write(this->uart0_filestream,this->buffer,9);
 
-	std::cout<<std::endl;
-	
-	return message;
-}
-
-float uart::getTemperature(int theuart){
-	this->sendMessage(theuart,getCode(INTERNAL_TEMPERATURE));
+	// this->sendMessage(theuart,msg);
 	this->readMessage(theuart);
 }

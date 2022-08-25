@@ -23,10 +23,10 @@ int main(int argc, char const *argv[]){
 	test.openUart(0);
 	test.defaultOptions(0);
 
-	std::string message = "salve salve familia";
+	// std::string message = "salve salve familia";
 	
-	test.sendMessage(0,message);
-	test.readMessage(0);
+	// test.sendMessage(0,message);
+	// test.readMessage(0);
 
 	test.getTemperature(0);
 
