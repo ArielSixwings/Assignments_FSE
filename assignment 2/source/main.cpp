@@ -20,15 +20,16 @@ int main(int argc, char const *argv[]){
 		
 
 	uart test;
-	test.defaultOptions(0);
-	test.openUart(0);
+	test.defaultOptions();
+	test.openUart();
 
 	// std::string message = "salve salve familia";
 	
 	// test.sendMessage(0,message);
 	// test.readMessage(0);
 
-	test.getTemperature(0);
+	test.getInternalTemperature();
+	test.getReferenceTemperature();
 
 	return 0;
 }

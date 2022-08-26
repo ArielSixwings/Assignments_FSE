@@ -1,11 +1,10 @@
 #include "../includes/UART.h"
 
+using namespace std::literals::chrono_literals;
+
 uart::uart(){
 	this->uart0_filestream = -1;
-	this->uart1_filestream = -1;
-
 	this->openUart0 = false;
-	this->openUart1 = false;
 
 	this->readbuffer = new unsigned char[9];
 	this->sendbuffer = new unsigned char[9];
@@ -13,91 +12,58 @@ uart::uart(){
 
 uart::~uart(){
 	if (this->openUart0) close(this->uart0_filestream);
-	if (this->openUart1) close(this->uart1_filestream);
 }
 
-bool uart::openUart(int theuart){
-	if (theuart == 0){
-		this->uart0_filestream = open("/dev/serial0",O_RDWR | O_NOCTTY | O_NDELAY);
-		if (this->uart0_filestream == -1){
-			std::cout << "Failed to open uart serial 0" << std::endl;
-			return false;
-		}
-		this->openUart0 = true;
-		return true;
-	}
+bool uart::openUart(){
 
-	if (theuart == 1){
-		this->uart1_filestream = open("/dev/serial1",O_RDWR | O_NOCTTY | O_NDELAY);
-		if (this->uart1_filestream == -1){
-			std::cout << "Failed to open uart serial 1" << std::endl;
-			return false;
-		}
-		this->openUart1 = true;
-		return true;
+	this->uart0_filestream = open("/dev/serial0",O_RDWR | O_NOCTTY | O_NDELAY);
+	if (this->uart0_filestream == -1){
+		std::cout << "Failed to open uart serial 0" << std::endl;
+		return false;
 	}
-	return false;
+	this->openUart0 = true;
+	return true;
 }
 
-bool uart::defaultOptions(int theuart){
+bool uart::defaultOptions(){
 	struct termios options;
 
-	if (theuart == 0){
-		if (this->uart0_filestream == -1){
-			std::cout << "Uart 0 was not properly open, can't set options" << std::endl;
-			return false;
-		}
-		tcgetattr(this->uart0_filestream, &options);	
+	if (this->uart0_filestream == -1){
+		std::cout << "Uart 0 was not properly open, can't set options" << std::endl;
+		return false;
 	}
-
-	if (theuart == 1){
-		if (this->uart1_filestream == -1){
-			std::cout << "Uart 1 was not properly open, can't set options" << std::endl;
-			return false;
-		}
-		tcgetattr(this->uart1_filestream, &options);	
-	}
+	tcgetattr(this->uart0_filestream, &options);	
 
 	options.c_cflag = B9600 | CS8 | CLOCAL | CREAD;
 	options.c_iflag = IGNPAR;
 	options.c_oflag = 0;
 	options.c_lflag = 0;
 
-	if (theuart == 0){
-		tcflush(this->uart0_filestream, TCIFLUSH);
-		tcsetattr(this->uart0_filestream, TCSANOW, &options);
-		return true;
-	}
-
-	tcflush(this->uart1_filestream, TCIFLUSH);
-	tcsetattr(this->uart1_filestream, TCSANOW, &options);
+	tcflush(this->uart0_filestream, TCIFLUSH);
+	tcsetattr(this->uart0_filestream, TCSANOW, &options);
+	
 	return true;
 }
 
-bool uart::sendMessage(int theuart,unsigned char *message){
-	int count;
-
-	if (theuart == 0) count = write(this->uart0_filestream,message,9);
-	if (theuart == 1) count = write(this->uart1_filestream,message,9);
+bool uart::sendMessage(){
+	
+	int count = write(this->uart0_filestream,this->sendbuffer,9);
 
 	if (count < 0){
 		std::cout << "Failed to send data" << std::endl;
 		return false;
 	}
 
-	// this->sendbuffer = message;
 	return true;
 }
 
-bool uart::readMessage(int theuart){
-	int count;
-	
-	if (theuart == 0) count = read(this->uart0_filestream,(void*)this->readbuffer,100);
-	if (theuart == 1) count = read(this->uart1_filestream,(void*)this->readbuffer,100); 
+bool uart::readMessage(){
+	int count = read(this->uart0_filestream,(void*)this->readbuffer,100);
+	float data;
 
 	if (count < 0){
-		std::cout << "Failed to read data" << std::endl;
-		std::cout << "readbuffer: " << this->readbuffer << std::endl;
+		std::cout << "Failed to read data: " << count << std::endl;
+		for (int i = 0; i < 9; ++i) printf("%d ",this->readbuffer[i]);
 		return false;
 	}
 
@@ -106,32 +72,50 @@ bool uart::readMessage(int theuart){
 		return true;
 	}
 
-	std::cout<<"RECEIVED MESSAGE: " << this->readbuffer << std::endl;
+	std::cout<<"RECEIVED MESSAGE: ";
+	for (int i = 0; i < 9; ++i) printf("%d ",this->readbuffer[i]);
+	std::cout << std::endl;
+	
+	memcpy(&data,&this->readbuffer[3],sizeof(float));
+	std::cout << data << std::endl;
+
+
 	return true;
 }
 
-void uart::getTemperature(int theuart){
-	unsigned char msg[9] = {ADDRESS, GET, INTERNAL_TEMP, 
+unsigned char* uart::buildGetMessage(){
+	unsigned char* msg = new unsigned char[9] {ADDRESS, GET, ZEROCODE, 
 		REGISTRATION0, 
 		REGISTRATION1, 
 		REGISTRATION2, 
-		REGISTRATION3};
+		REGISTRATION3
+	};
+	return msg;
+}
+
+void uart::getTemperature(unsigned char WICHTEMPERATURE){
+	this->sendbuffer = buildGetMessage();
+	this->sendbuffer[2] = WICHTEMPERATURE;
 
 
-	uint16_t crc = computeCrc(msg,7);
-	memcpy(&msg[7],&crc,sizeof(crc));
+	uint16_t crc = this->computeCrc(this->sendbuffer,7);
+	memcpy(&this->sendbuffer[7],&crc,sizeof(crc));
 
-	for (int i = 0; i < 9; ++i){
-		printf("%X ",msg[i]);
-	}
+	for (int i = 0; i < 9; ++i) printf("%X ",this->sendbuffer[i]);
 
 	std::cout << std::endl;
-
-	this->sendbuffer = msg;
 	
-	write(this->uart0_filestream,this->sendbuffer,9);
-	read(this->uart0_filestream,this->readbuffer,9);
+	this->sendMessage();
+	std::this_thread::sleep_for(1s);
+	this->readMessage();
 	
 	std::cout << this->readbuffer << std::endl;
-	// this->readMessage(theuart);
+}
+
+void uart::getInternalTemperature(){
+	this->getTemperature(INTERNAL_TEMP);
+}
+
+void uart::getReferenceTemperature(){
+	this->getTemperature(REFERENCE_TEMP);
 }
