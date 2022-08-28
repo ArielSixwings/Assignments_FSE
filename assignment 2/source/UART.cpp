@@ -29,7 +29,7 @@ bool uart::defaultOptions(){
 	struct termios options;
 
 	if (this->uart0_filestream == -1){
-		std::cout << "Uart 0 was not properly open, can't set options" << std::endl;
+		std::cout << "Uart 0 was not properly open, can't set options: " << this->uart0_filestream << std::endl;
 		return false;
 	}
 	tcgetattr(this->uart0_filestream, &options);	
@@ -59,7 +59,6 @@ bool uart::sendMessage(){
 
 bool uart::readMessage(){
 	int count = read(this->uart0_filestream,(void*)this->readbuffer,100);
-	float data;
 
 	if (count < 0){
 		std::cout << "Failed to read data: " << count << std::endl;
@@ -76,8 +75,8 @@ bool uart::readMessage(){
 	for (int i = 0; i < 9; ++i) printf("%d ",this->readbuffer[i]);
 	std::cout << std::endl;
 	
-	memcpy(&data,&this->readbuffer[3],sizeof(float));
-	std::cout << data << std::endl;
+	memcpy(&this->data,&this->readbuffer[3],sizeof(float));
+	std::cout << this->data << std::endl;
 
 
 	return true;
@@ -112,10 +111,12 @@ void uart::getTemperature(unsigned char WICHTEMPERATURE){
 	std::cout << this->readbuffer << std::endl;
 }
 
-void uart::getInternalTemperature(){
+float uart::getInternalTemperature(){
 	this->getTemperature(INTERNAL_TEMP);
+	return this->data;
 }
 
-void uart::getReferenceTemperature(){
+float uart::getReferenceTemperature(){
 	this->getTemperature(REFERENCE_TEMP);
+	return this->data;
 }

@@ -6,30 +6,36 @@
 using namespace std::literals::chrono_literals;
 
 int main(int argc, char const *argv[]){
+	
+	float output;
 
-	// pid test(80);
+	float useTimer = 5.0;
+	float referenceTemperature = 0.0;
+	float internalTemperature = 0.0;
+
+	uart UartConnection;
+
+	UartConnection.openUart(); 
+	UartConnection.defaultOptions();
+
+	timeStart = std::chrono::high_resolution_clock::now();
+	timeEnd = std::chrono::high_resolution_clock::now();
+
+	std::chrono::duration<float> Timer = timeEnd - timeStart;
 	
-	// float output;
-	
-	// for (int i = 0; i < 80; ++i){
-	// 	output = test.controlTemperature(i);
-	// 	std::cout <<"output: " << output;
-	// 	std::cout <<"  temp : " << i << std::endl;
-	// 	std::this_thread::sleep_for(0.5s);
-	// }
+	pid pidController(0);
+
+	for (; Timer < std::chrono::duration<float>(useTimer);){
+		referenceTemperature = UartConnection.getReferenceTemperature();
+		internalTemperature = UartConnection.getInternalTemperature();
+
+		pidController.setReferenceTemperature(referenceTemperature);
+
+		output = pidController.controlTemperature(internalTemperature);
 		
-
-	uart test;
-	test.defaultOptions();
-	test.openUart();
-
-	// std::string message = "salve salve familia";
-	
-	// test.sendMessage(0,message);
-	// test.readMessage(0);
-
-	test.getInternalTemperature();
-	test.getReferenceTemperature();
+		std::cout <<"output: " << output;
+		std::this_thread::sleep_for(0.5s);
+	}
 
 	return 0;
 }

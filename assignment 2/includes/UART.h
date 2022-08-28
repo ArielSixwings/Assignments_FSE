@@ -7,6 +7,7 @@
 #include <termios.h>
 #include <string.h>
 #include "crc.h"
+#include <thread>
 // #include <wiringPi.h>
 
 #define INTERNAL_TEMPERATURE 1
@@ -25,6 +26,9 @@ const unsigned char REGISTRATION1 = 0x03;
 const unsigned char REGISTRATION2 = 0x02;
 const unsigned char REGISTRATION3 = 0x08;
 
+static std::chrono::time_point<std::chrono::high_resolution_clock> timeStart;
+static std::chrono::time_point<std::chrono::high_resolution_clock> timeEnd;
+
 class uart : public crc16{
 
 private:
@@ -37,18 +41,21 @@ private:
 	unsigned char* readbuffer;
 	unsigned char* sendbuffer;
 	
+	float data;
+
 	bool sendMessage();
 	bool readMessage();
 	unsigned char* buildGetMessage();
 	void getTemperature(unsigned char WICHTEMPERATURE);
+
 
 public:
 	uart();
 	~uart();
 	bool openUart();
 	bool defaultOptions();
-	void getInternalTemperature();
-	void getReferenceTemperature();
+	float getInternalTemperature();
+	float getReferenceTemperature();
 };
 
 #endif //UART_H

@@ -23,6 +23,10 @@ pid::pid(float refTemp, float kp, float ki, float kd, float T){
 	this->period = T;
 }
 
+void pid::setReferenceTemperature(float refTemp){
+	this->referenceTemperature = refTemp;
+}
+
 float pid::boundedValue(float candidate){
 	if(candidate >= MAXCONTROL){
 		return MAXCONTROL;

@@ -10,9 +10,10 @@ static float MINCONTROL = -100.0;
 class pid{
 
 private:
+	float referenceTemperature = 0.0;
+
 	float totalError = 0.0;
 	float previusError = 0.0;
-	float referenceTemperature = 0.0;
 	float deltaTemperature = 0.0;
 
 	float proportionalController = 0.0; //kp
@@ -20,13 +21,14 @@ private:
 	float derivativeController = 0.0;	//kd
 
 	float period = 1.0;
+	float boundedValue(float candidate);
 
 public:
 	pid(float refTemp);
 	pid(float refTemp, float kp, float ki, float kd, float T);
 
 	float controlTemperature(float inputTemperature);
-	float boundedValue(float candidate);
+	void setReferenceTemperature(float refTemp);
 };
 
 #endif //PID_H
