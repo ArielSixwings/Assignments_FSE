@@ -24,10 +24,11 @@ private:
 	float boundedValue(float candidate);
 
 public:
+	pid();
 	pid(float refTemp);
 	pid(float refTemp, float kp, float ki, float kd, float T);
 
-	float controlTemperature(float inputTemperature);
+	float computePID(float inputTemperature);
 	void setReferenceTemperature(float refTemp);
 };
 

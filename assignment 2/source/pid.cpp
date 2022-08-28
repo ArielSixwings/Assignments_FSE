@@ -1,5 +1,17 @@
 #include "../includes/pid.h"
 
+pid::pid(){
+	
+	this->referenceTemperature = 80.0;
+	this->proportionalController = 30.0;
+	this->integralController = 0.2;
+	this->derivativeController = 400.0;
+
+	this->period = 1.0;
+	
+	std::cout << "pid at default values of 30, 0.2 and 400.0 respectvely" << std::endl;
+	std::cout << "Reference Temperature at place holder valeu of 80.0" << std::endl; 
+}
 
 pid::pid(float refTemp){
 	
@@ -39,7 +51,7 @@ float pid::boundedValue(float candidate){
 	return candidate;
 }
 
-float pid::controlTemperature(float inputTemperature){
+float pid::computePID(float inputTemperature){
 	
 	float errorCandidate;
 	float deltaError;

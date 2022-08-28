@@ -6,9 +6,8 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <string.h>
-#include "crc.h"
 #include <thread>
-// #include <wiringPi.h>
+#include "crc.h"
 
 #define INTERNAL_TEMPERATURE 1
 #define REFERENCE_TEMPERATURE 2
@@ -25,9 +24,6 @@ const unsigned char REGISTRATION0 = 0x06;
 const unsigned char REGISTRATION1 = 0x03;
 const unsigned char REGISTRATION2 = 0x02;
 const unsigned char REGISTRATION3 = 0x08;
-
-static std::chrono::time_point<std::chrono::high_resolution_clock> timeStart;
-static std::chrono::time_point<std::chrono::high_resolution_clock> timeEnd;
 
 class uart : public crc16{
 

@@ -71,12 +71,12 @@ bool uart::readMessage(){
 		return true;
 	}
 
-	std::cout<<"RECEIVED MESSAGE: ";
-	for (int i = 0; i < 9; ++i) printf("%d ",this->readbuffer[i]);
-	std::cout << std::endl;
+	// std::cout<<"RECEIVED MESSAGE: ";
+	// for (int i = 0; i < 9; ++i) printf("%d ",this->readbuffer[i]);
+	// std::cout << std::endl;
 	
 	memcpy(&this->data,&this->readbuffer[3],sizeof(float));
-	std::cout << this->data << std::endl;
+	// std::cout << this->data << std::endl;
 
 
 	return true;
@@ -100,23 +100,23 @@ void uart::getTemperature(unsigned char WICHTEMPERATURE){
 	uint16_t crc = this->computeCrc(this->sendbuffer,7);
 	memcpy(&this->sendbuffer[7],&crc,sizeof(crc));
 
-	for (int i = 0; i < 9; ++i) printf("%X ",this->sendbuffer[i]);
-
-	std::cout << std::endl;
+	// for (int i = 0; i < 9; ++i) printf("%X ",this->sendbuffer[i]);
 	
 	this->sendMessage();
-	std::this_thread::sleep_for(1s);
+	std::this_thread::sleep_for(0.5s);
 	this->readMessage();
 	
-	std::cout << this->readbuffer << std::endl;
+	// std::cout << this->readbuffer << std::endl;
 }
 
 float uart::getInternalTemperature(){
 	this->getTemperature(INTERNAL_TEMP);
+	std::cout << "Internal Temperature: " <<this->data << std::endl;
 	return this->data;
 }
 
 float uart::getReferenceTemperature(){
 	this->getTemperature(REFERENCE_TEMP);
+	std::cout << "Reference Temperature: " <<this->data << std::endl;
 	return this->data;
 }
