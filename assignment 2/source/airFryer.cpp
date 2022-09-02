@@ -5,9 +5,6 @@ using namespace std::literals::chrono_literals;
 airFryer::airFryer(){
 	wiringPiSetup();
 
-
-	// pinMode(GPIO23,PWM_OUTPUT);
-	// pinMode(GPIO24,PWM_OUTPUT);
 	softPwmCreate (GPIO23, 0, 100) ;
 	softPwmCreate (GPIO24, 0, 100) ;
 

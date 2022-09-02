@@ -1,7 +1,7 @@
-#include "../includes/lcdMenu.h"
+#include "../includes/lcd.h"
 
 //lcd_init
-lcdMenu::lcdMenu(){
+lcd::lcd(){
 	// Initialise display
 
 	this->fd = wiringPiI2CSetup(I2C_ADDR);
@@ -15,7 +15,7 @@ lcdMenu::lcdMenu(){
 }
 
 //lcd_byte
-void lcdMenu::SendDatatoPins(int bits, int mode){
+void lcd::SendDatatoPins(int bits, int mode){
 
 	// bits = the data
 	// mode = 1 for data, 0 for command
@@ -33,17 +33,17 @@ void lcdMenu::SendDatatoPins(int bits, int mode){
 }
 
 //lcdLoc
-void lcdMenu::cursorAtStart(int line){
+void lcd::cursorAtStart(int line){
 	
 	SendDatatoPins(line, LCD_CMD);
 }
 
-void lcdMenu::typeln(const char *str){
+void lcd::typeln(const char *str){
 
 	while (*str) SendDatatoPins(*(str++), LCD_CHR);
 }
 
-void lcdMenu::lcd_toggle_enable(int bits){
+void lcd::lcd_toggle_enable(int bits){
 	// Toggle enable pin on LCD display
 	delayMicroseconds(500);
 	wiringPiI2CReadReg8(fd, (bits | ENABLE));
@@ -52,7 +52,7 @@ void lcdMenu::lcd_toggle_enable(int bits){
 	delayMicroseconds(500);
 }
 
-void lcdMenu::WriteOnLcd(bool line2,const char *str){
+void lcd::WriteOnLcd(bool line2,const char *str){
 	if (line2){
 		this->cursorAtStart(LINE2);
 		this->typeln(str);
@@ -62,8 +62,9 @@ void lcdMenu::WriteOnLcd(bool line2,const char *str){
 	this->typeln(str);
 }
 
-void lcdMenu::WriteInt(bool line2,const char *str,int myInt){
-	this->moveCursor();
+void lcd::WriteInt(bool line2,const char *str,int myInt){
+	if (line2) this->cursorAtStart(LINE2);
+	if (!line2)this->cursorAtStart(LINE1);
 	this->typeln(str);
 
 	char buffer[20];
@@ -71,9 +72,14 @@ void lcdMenu::WriteInt(bool line2,const char *str,int myInt){
 	this->typeln(buffer);
 }
 
-void lcdMenu::WriteFloat(bool line2,const char *str,float myFloat){
-	this->moveCursor();
+void lcd::WriteFloat(bool begin,bool line2,const char *str,float myFloat){
+	
+	if (begin){
+		if (line2) this->cursorAtStart(LINE2);
+		if (!line2)this->cursorAtStart(LINE1);
+	}
 	this->typeln(str);
+
 
 	char buffer[20];
 	sprintf(buffer, "%4.2f",  myFloat);
@@ -81,12 +87,12 @@ void lcdMenu::WriteFloat(bool line2,const char *str,float myFloat){
 }
 
 //ClrLcd
-void lcdMenu::moveCursor(){
+void lcd::moveCursor(){
 	this->lcd_byte(0x01, LCD_CMD);
 	this->lcd_byte(0x02, LCD_CMD);
 }
 
-void lcdMenu::lcd_byte(int bits, int mode){
+void lcd::lcd_byte(int bits, int mode){
 
 	//Send byte to data pins
 	// bits = the data

@@ -18,7 +18,7 @@
 
 
 
-class lcdMenu{
+class lcd{
 private:
 	int fd;  // seen by all subroutines
 
@@ -30,9 +30,9 @@ private:
 	void SendDatatoPins(int bits, int mode);
 
 public:
-	lcdMenu();
+	lcd();
 	void WriteOnLcd(bool line2,const char *str);
 	void WriteInt(bool line2,const char *str,int myInt);
-	void WriteFloat(bool line2,const char *str,float myFloat);
+	void WriteFloat(bool begin,bool line2,const char *str,float myFloat);
 
 };

@@ -2,7 +2,8 @@
  * crc16.c
  *
  *  Created on: 18/03/2014
- *      Author: Renato Coral Sampaio
+ *      Author: Renato Coral Sampaio.
+ *      Object oriented by Ariel Vieira Lima Serafim.
  */
 #include "../includes/crc.h"
 
