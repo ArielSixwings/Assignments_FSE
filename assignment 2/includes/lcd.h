@@ -1,3 +1,6 @@
+#ifndef LCD_H
+#define LCD_H
+
 #include <wiringPiI2C.h>
 #include <wiringPi.h>
 #include <stdlib.h>
@@ -36,3 +39,5 @@ public:
 	void WriteFloat(bool begin,bool line2,const char *str,float myFloat);
 
 };
+
+#endif //LCD_H

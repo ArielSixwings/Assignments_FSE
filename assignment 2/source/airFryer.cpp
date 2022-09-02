@@ -28,30 +28,33 @@ void airFryer::activateFan(int percentage){
 	softPwmWrite(GPIO24,percentage);
 }
 
-void airFryer::controlTemperature(){
+void airFryer::PreHeating(){
 	
-	float userTimer = 125.0;
 	float percentage;
 	float internalTemperature = 0.0;
 	float referenceTemperature = 0.0;
 
-	bool startTimer = true;
+	int startTimer = 5;
+	bool stay = true;
 
-	this->timeStart = std::chrono::high_resolution_clock::now();
-	this->timeEnd = std::chrono::high_resolution_clock::now();
-	
-	this->Timer = this->timeEnd - this->timeStart;
-
-	for (; this->Timer < std::chrono::duration<float>(userTimer) or startTimer == false;){
+	for (; stay ;){
 		
 		referenceTemperature =  this->getReferenceTemperature();
 		internalTemperature = this->getInternalTemperature();
 
-		if (abs(referenceTemperature - internalTemperature) <= 1 and startTimer == true){
-			startTimer = false;
-			this->timeStart = std::chrono::high_resolution_clock::now();
-			std::cout << "Pre aquecimento feito, Iniciando timer de: " << userTimer/60 << "minutos    " << abs(referenceTemperature - internalTemperature) << std::endl;
-			std::this_thread::sleep_for(2s);
+		this->presentPreHeating(internalTemperature, referenceTemperature);
+
+		if (abs(referenceTemperature - internalTemperature) <= 1 and stay == true){
+			startTimer--;
+			std::cout <<"Stable temperature: " << startTimer << std::endl;
+			if (startTimer == 0){
+				stay = false;
+			}
+		}
+
+		if (abs(referenceTemperature - internalTemperature) > 1 and stay == false){
+			startTimer++;
+			std::cout <<"Unstable reading, adding to verification varible: " << startTimer << std::endl;
 		}
 
 		this->setReferenceTemperature(referenceTemperature);
@@ -60,19 +63,7 @@ void airFryer::controlTemperature(){
 		
 		std::cout <<"percentage: " << percentage << std::endl;
 		
-		if (percentage > 0){
-			this->activateResistence(percentage);
-		}
-
-		if (percentage < 0){
-			this->activateFan(-1*percentage);
-		}
-
-		this->timeEnd = std::chrono::high_resolution_clock::now();
-		this->Timer = this->timeEnd - this->timeStart;
-		
-		if (startTimer == false){
-			std::cout << "Timer: " << float(this->Timer.count()) << "/" << userTimer << std::endl;
-		} 
+		if (percentage > 0) this->activateResistence(percentage);
+		if (percentage < 0) this->activateFan(-1*percentage);
 	}
 }

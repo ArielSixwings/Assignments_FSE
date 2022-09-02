@@ -1,3 +1,6 @@
+#ifndef MENU_H
+#define MENU_H
+
 #include "lcd.h"
 
 
@@ -6,6 +9,9 @@ private:
 
 public:
 	menu();
-	void preHeating(float internalTemperature, float referenceTemperature);
+	void presentPreHeating(float intTemp, float refTemp);
+	void presentBaking(float currentTime, float userTime);
 
 };
+
+#endif //MENU_H

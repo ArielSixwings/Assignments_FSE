@@ -6,14 +6,14 @@ menu::menu(){
 	this->WriteOnLcd(false,"AirFryer pronta");
 }
 
-void menu::preHeating(float internalTemperature, float referenceTemperature){
+void menu::presentPreHeating(float intTemp, float refTemp){
 	this->WriteOnLcd(false,"Aquecendo:      ");
-	this->WriteFloat(true,true,"",internalTemperature);
-	this->WriteFloat(false,true,"//",referenceTemperature);
+	this->WriteFloat(true,true,"",intTemp);
+	this->WriteFloat(false,true,"//",refTemp);
 }
 
-void menu::baking(float currentTime, float userTime){
+void menu::presentBaking(float currentTime, float userTime){
 	this->WriteOnLcd(false,"Assando:        ");
-	this->WriteFloat(true,true,"Tempo: ",internalTemperature);
-	this->WriteFloat(false,true,"//",referenceTemperature);
+	this->WriteFloat(true,true,"Tempo: ",currentTime);
+	this->WriteFloat(false,true,"//",userTime);
 }
