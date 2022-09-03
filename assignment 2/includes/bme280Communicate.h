@@ -18,10 +18,10 @@ struct identifier {
 	int8_t fd;
 };
 
-struct bme280_dev dev;
-struct identifier id;
+static struct bme280_dev dev;
+static struct identifier id;
 
-int8_t rslt;
+static int8_t rslt;
 
 void user_delay_us(uint32_t period, void *intf_ptr);
 
@@ -38,6 +38,7 @@ private:
 public: 
 	bme280Communicate();
 	~bme280Communicate();
+	double getTemperature();
 };
 
 
