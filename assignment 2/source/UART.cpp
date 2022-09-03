@@ -58,7 +58,7 @@ bool uart::sendMessage(){
 }
 
 bool uart::readMessage(){
-	int count = read(this->uart0_filestream,(void*)this->readbuffer,100);
+	int count = read(this->uart0_filestream,(void*)this->readbuffer,9);
 
 	if (count < 0){
 		std::cout << "Failed to read data: " << count << std::endl;
