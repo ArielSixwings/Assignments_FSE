@@ -16,14 +16,14 @@ EXEC = airfryer
 #Directory of source code:
 DIR_SOURCE = source
 SOURCE = $(wildcard $(DIR_SOURCE)/*.cpp)
-
+SOURCE2 = $(wildcard $(DIR_SOURCE)/*.c)
 # Directory of includeded headers and headers:
 DIR_INCLUDE = includes
 INCLUDE = $(wildcard $(DIR_INCLUDE)/*.h)
 
 # Directory of objects and objects:
 DIR_OBJ = Objects
-OBJS= $(addprefix $(DIR_OBJ)/,$(notdir $(SOURCE:.cpp=.o)))
+OBJS= $(addprefix $(DIR_OBJ)/,$(notdir $(SOURCE:.cpp=.o) $(SOURCE2:.c=.o)))
 
 # Compiler and flags:
 CC = g++
@@ -59,7 +59,7 @@ $(DIR_OBJ)/main.o: $(DIR_SOURCE)/main.cpp
 	@mkdir -p $(DIR_OBJ)
 	$(CC) -c $< -o $@ $(CFLAGS)
 
-$(DIR_OBJ)/%.o: $(DIR_SOURCE)/%.cpp $(DIR_INCLUDE)/%.h
+$(DIR_OBJ)/%.o: $(DIR_SOURCE)/%.cpp $(DIR_SOURCE)/%.c $(DIR_INCLUDE)/%.h
 	@mkdir -p $(DIR_OBJ)
 	$(CC) -c $< -o $@ $(CFLAGS)
 

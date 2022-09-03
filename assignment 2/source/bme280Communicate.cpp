@@ -1,10 +1,6 @@
-#include <../includes/bme280Communicate.h>
-
-float temperatura = 0;
+#include "../includes/bme280Communicate.h"
 
 bme280Communicate::bme280Communicate() {
-	
-	temperatura = 0;
 	rslt = BME280_OK;
 
 	if ((id.fd = open("/dev/i2c-1", O_RDWR)) < 0){
@@ -35,13 +31,13 @@ bme280Communicate::bme280Communicate() {
 
 bme280Communicate::~bme280Communicate() = default;
 
-void bme280Communicate::user_delay_us(uint32_t period, void *intf_ptr) {
+void user_delay_us(uint32_t period, void *intf_ptr) {
 	struct identifier id;
 	id = *((struct identifier *)intf_ptr);
 	usleep(period);
 }
 
-int8_t bme280Communicate::user_i2c_read(uint8_t reg_addr, uint8_t *data, uint32_t len, void *intf_ptr) {
+int8_t user_i2c_read(uint8_t reg_addr, uint8_t *data, uint32_t len, void *intf_ptr) {
 	struct identifier id;
 
 	id = *((struct identifier *)intf_ptr);
@@ -52,7 +48,7 @@ int8_t bme280Communicate::user_i2c_read(uint8_t reg_addr, uint8_t *data, uint32_
 	return 0;
 }
 
-int8_t bme280Communicate::user_i2c_write(uint8_t reg_addr, const uint8_t *data, uint32_t len, void *intf_ptr) {
+int8_t user_i2c_write(uint8_t reg_addr, const uint8_t *data, uint32_t len, void *intf_ptr) {
 	uint8_t *buf;
 	struct identifier id;
 
