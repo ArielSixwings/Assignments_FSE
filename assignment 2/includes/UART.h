@@ -39,6 +39,7 @@ private:
 	
 	float data;
 
+	bool compareCrc();
 	bool sendMessage();
 	bool readMessage();
 	unsigned char* buildGetMessage();

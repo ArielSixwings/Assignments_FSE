@@ -99,14 +99,12 @@ void uart::getTemperature(unsigned char WICHTEMPERATURE){
 
 	uint16_t crc = this->computeCrc(this->sendbuffer,7);
 	memcpy(&this->sendbuffer[7],&crc,sizeof(crc));
-
-	// for (int i = 0; i < 9; ++i) printf("%X ",this->sendbuffer[i]);
 	
 	this->sendMessage();
 	std::this_thread::sleep_for(0.5s);
 	this->readMessage();
-	
-	// std::cout << this->readbuffer << std::endl;
+
+	if (this->compareCrc()) this->getTemperature(WICHTEMPERATURE);
 }
 
 float uart::getInternalTemperature(){
@@ -119,4 +117,8 @@ float uart::getReferenceTemperature(){
 	this->getTemperature(REFERENCE_TEMP);
 	std::cout << "Reference Temperature: " <<this->data << std::endl;
 	return this->data;
+}
+
+bool uart::compareCrc() {
+	return (this->sendbuffer[2] != this->readbuffer[2]);
 }

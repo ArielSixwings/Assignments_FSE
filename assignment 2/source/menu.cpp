@@ -7,13 +7,26 @@ menu::menu(){
 }
 
 void menu::presentPreHeating(float intTemp, float refTemp){
-	this->WriteOnLcd(false,"Aquecendo:      ");
+	
+	this->WriteOnLcd(true,"                ");
+	this->WriteOnLcd(false,"                ");
+	
+	if(intTemp < refTemp) this->WriteOnLcd(false,"Aquecendo:      ");
+	if(intTemp > refTemp) this->WriteOnLcd(false,"Resfriando:     ");
+	
 	this->WriteFloat(true,true,"",intTemp);
 	this->WriteFloat(false,true,"//",refTemp);
 }
 
-void menu::presentBaking(float currentTime, float userTime){
-	this->WriteOnLcd(false,"Assando:        ");
-	this->WriteFloat(true,true,"Tempo: ",currentTime);
-	this->WriteFloat(false,true,"//",userTime);
+// void WriteFloat(bool begin,bool line2,const char *str,float myFloat);
+void menu::presentBaking(float currentTime, float userTime, float refTemp){
+	
+	this->WriteOnLcd(true,"                ");
+	this->WriteOnLcd(false,"                ");
+
+	this->WriteFloat(true,false,"Assando:        ",refTemp);
+	this->WriteFloat(true,true,"Tempo: ",currentTime/60);
+	this->WriteFloat(false,true,"//",userTime/60);
+	
+	std::cout << "currentTime: " << currentTime << std::endl;
 }

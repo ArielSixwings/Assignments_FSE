@@ -30,6 +30,8 @@ void airFryer::activateFan(int percentage){
 
 void airFryer::PreHeating(){
 	
+	std::cout << "Pre Heating" << std::endl;
+
 	float percentage;
 	float internalTemperature = 0.0;
 	float referenceTemperature = 0.0;
@@ -69,6 +71,8 @@ void airFryer::PreHeating(){
 }
 
 bool airFryer::Baking(){
+
+	std::cout << "Baking" << std::endl;
 	
 	float percentage;
 	float internalTemperature = 0.0;
@@ -79,7 +83,7 @@ bool airFryer::Baking(){
 	this->timeEnd = std::chrono::high_resolution_clock::now();
 	this->Timer = this->timeEnd - this->timeStart;
 	
-	float useTime = 1.0;
+	float useTime = 2*60.0;
 
 	for (; this->Timer < std::chrono::duration<float>(useTime) ;){
 		
@@ -106,10 +110,12 @@ bool airFryer::Baking(){
 }
 
 void airFryer::coolDown(){
+	std::cout << "Cooling down" << std::endl;
+
 	float externalTemperature =  this->getExternalTemperature();
 	float internalTemperature = this->getInternalTemperature();
 
-	for (; abs(externalTemperature - internalTemperature) > 1 ;){
+	for (; abs(externalTemperature - internalTemperature) > 3 ;){
 		
 		internalTemperature = this->getInternalTemperature();
 
@@ -131,4 +137,5 @@ void airFryer::bake(){
 
 		endRoutine = this->Baking();
 	}
+	this->coolDown();
 }

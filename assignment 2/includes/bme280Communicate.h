@@ -38,7 +38,7 @@ private:
 public: 
 	bme280Communicate();
 	~bme280Communicate();
-	double getTemperature();
+	double getExternalTemperature();
 };
 
 

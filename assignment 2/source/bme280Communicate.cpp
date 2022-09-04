@@ -64,7 +64,7 @@ int8_t user_i2c_write(uint8_t reg_addr, const uint8_t *data, uint32_t len, void 
 	return BME280_OK;
 }
 
-double bme280Communicate::getTemperature() {
+double bme280Communicate::getExternalTemperature() {
 
 	rslt = BME280_OK;
 	uint32_t req_delay;
