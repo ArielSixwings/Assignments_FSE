@@ -11,7 +11,8 @@ private:
 public:
 	menu();
 	void presentPreHeating(float intTemp, float refTemp);
-	void presentBaking(float currentTime, float userTime, float refTemp);
+	void presentBaking(int currentTime, int userTime, float refTemp);
+	void clearMenu();
 
 };
 

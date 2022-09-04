@@ -104,21 +104,14 @@ void uart::getUserInput(){
 	std::this_thread::sleep_for(0.5s);
 	this->readMessage();
 
-	switch(this->readbuffer[2]) {
-		case CONTROL_SIGNAL:
-			std::cout << "CONTROL_SIGNAL" << std::endl;
+	switch(int(this->data)) {
+		case 5:
+			std::cout << "CASE 5: + time" << std::endl;
+			this->userTimer++;
 			break;
-		case SYSTEM_STATE:
-			std::cout << "SYSTEM_STATE" << std::endl;
-			break;
-		case TEMP_CONTROL_STATE:
-			std::cout << "TEMP_CONTROL_STATE" << std::endl;
-			break;
-		case ONOFF_STATE:
-			std::cout << "ONOFF_STATE" << std::endl;
-			break;
-		case USER_TIMER:
-			this->userTimer = int(this->data);
+		case 6:
+			std::cout << "CASE 6: + time" << std::endl;
+			this->userTimer--;
 			break;	
 		default:
 			std::cout << "default case" << std::endl;

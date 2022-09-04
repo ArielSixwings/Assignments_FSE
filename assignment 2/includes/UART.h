@@ -24,11 +24,11 @@ const unsigned char REFERENCE_TEMP = 0xC2;
 
 const unsigned char USER_COMMANDS = 0xC3;
 
-const unsigned char CONTROL_SIGNAL 		= 0xD1;
-const unsigned char SYSTEM_STATE 		= 0xD3;
-const unsigned char TEMP_CONTROL_STATE 	= 0xD4;
-const unsigned char ONOFF_STATE 		= 0xD5;
-const unsigned char USER_TIMER 			= 0xD6;
+// const unsigned char CONTROL_SIGNAL 		= 0xD1;
+// const unsigned char SYSTEM_STATE 		= 0xD3;
+// const unsigned char TEMP_CONTROL_STATE 	= 0xD4;
+// const unsigned char ONOFF_STATE 		= 0xD5;
+// const unsigned char USER_TIMER 			= 0xD6;
 
 const unsigned char REGISTRATION0 = 0x06;
 const unsigned char REGISTRATION1 = 0x03;

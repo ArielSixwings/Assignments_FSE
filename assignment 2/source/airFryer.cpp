@@ -89,12 +89,17 @@ bool airFryer::Baking(){
 	this->Timer = this->timeEnd - this->timeStart;
 	
 	this->getUserInput();
-	float useTime = 60*this->userTimer;
+	float useTime = 60;
 
 	for (; this->Timer < std::chrono::duration<float>(useTime) and allOn;){
 		
 		this->getUserInput();
-		float useTime = 60*this->userTimer;
+		if (this->userTimer){
+			useTime = 60*this->userTimer;
+		} else{
+			useTime = 60;
+		}
+
 
 		referenceTemperature =  this->getReferenceTemperature();
 		std::this_thread::sleep_for(0.5s);
@@ -102,7 +107,7 @@ bool airFryer::Baking(){
 
 		if (initialRefTemp != referenceTemperature) return false;
 
-		this->presentBaking(float(this->Timer.count()), useTime, referenceTemperature);
+		this->presentBaking(int(this->Timer.count()), int(useTime), referenceTemperature);
 		this->setReferenceTemperature(referenceTemperature);
 		percentage = this->computePID(internalTemperature);
 
@@ -146,7 +151,9 @@ void airFryer::bake(){
 
 		endRoutine = this->Baking();
 	}
+
 	this->coolDown();
 	this->activateFan(0);
+	this->clearMenu();
 
 }

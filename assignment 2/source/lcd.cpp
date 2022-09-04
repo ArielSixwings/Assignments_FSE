@@ -44,9 +44,11 @@ void lcd::WriteOnLcd(bool line2,const char *str){
 	this->typeln(str);
 }
 
-void lcd::WriteInt(bool line2,const char *str,int myInt){
-	if (line2) this->cursorAtStart(LINE2);
-	if (!line2)this->cursorAtStart(LINE1);
+void lcd::WriteInt(bool begin,bool line2,const char *str,int myInt){
+	if (begin){
+		if (line2) this->cursorAtStart(LINE2);
+		if (!line2)this->cursorAtStart(LINE1);
+	}
 	this->typeln(str);
 
 	char buffer[20];

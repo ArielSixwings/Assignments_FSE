@@ -66,10 +66,10 @@ int8_t user_i2c_write(uint8_t reg_addr, const uint8_t *data, uint32_t len, void 
 
 double bme280Communicate::getExternalTemperature() {
 
-	rslt = BME280_OK;
+	rslt = BME280_OK; 
 	uint32_t req_delay;
 
-	uint8_t settings_sel = 0;
+	uint8_t settings_sel;
 	struct bme280_data comp_data;
 
 	dev.settings.osr_h = BME280_OVERSAMPLING_1X;
@@ -77,19 +77,19 @@ double bme280Communicate::getExternalTemperature() {
 	dev.settings.osr_t = BME280_OVERSAMPLING_2X;
 	dev.settings.filter = BME280_FILTER_COEFF_16;
 
+	req_delay = bme280_cal_meas_delay(&dev.settings);
+
 	settings_sel = BME280_OSR_PRESS_SEL | BME280_OSR_TEMP_SEL | BME280_OSR_HUM_SEL | BME280_FILTER_SEL;
 
 	rslt = bme280_set_sensor_settings(settings_sel, &dev);
-
-
 	rslt = bme280_set_sensor_mode(BME280_FORCED_MODE, &dev);
+	
 	if (rslt != BME280_OK) {
 		fprintf(stderr, "Failed to set sensor mode (code %+d).", rslt);
 		return -1;
 	}
-
-	req_delay = bme280_cal_meas_delay(&dev.settings);
 	dev.delay_us(req_delay, dev.intf_ptr);
+
 	rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, &dev);
 
 	if (rslt != BME280_OK) {

@@ -34,7 +34,7 @@ private:
 public:
 	lcd();
 	void WriteOnLcd(bool line2,const char *str);
-	void WriteInt(bool line2,const char *str,int myInt);
+	void WriteInt(bool begin,bool line2,const char *str,int myInt);
 	void WriteFloat(bool begin,bool line2,const char *str,float myFloat);
 
 };
