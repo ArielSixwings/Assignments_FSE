@@ -5,6 +5,7 @@
 #include <wiringPi.h>
 #include <softPwm.h>
 #include <stdlib.h> 
+#include <signal.h>
 #include "UART.h"
 #include "pid.h"
 #include "menu.h"
@@ -12,6 +13,8 @@
 
 #define GPIO23 4
 #define GPIO24 5
+
+static bool allOn = true;
 
 class airFryer : public uart, public pid, public menu, public bme280Communicate{
 

@@ -2,6 +2,11 @@
 
 using namespace std::literals::chrono_literals;
 
+void stopAll(int thesignal){
+	std::cout << "Closing all: " << thesignal << std::endl;
+	allOn = false;
+}
+
 airFryer::airFryer(){
 	wiringPiSetup();
 
@@ -39,7 +44,7 @@ void airFryer::PreHeating(){
 	int startTimer = 5;
 	bool stay = true;
 
-	for (; stay ;){
+	for (; stay and allOn;){
 		
 		referenceTemperature =  this->getReferenceTemperature();
 		internalTemperature = this->getInternalTemperature();
@@ -83,10 +88,14 @@ bool airFryer::Baking(){
 	this->timeEnd = std::chrono::high_resolution_clock::now();
 	this->Timer = this->timeEnd - this->timeStart;
 	
-	float useTime = 2*60.0;
+	this->getUserInput();
+	float useTime = 60*this->userTimer;
 
-	for (; this->Timer < std::chrono::duration<float>(useTime) ;){
+	for (; this->Timer < std::chrono::duration<float>(useTime) and allOn;){
 		
+		this->getUserInput();
+		float useTime = 60*this->userTimer;
+
 		referenceTemperature =  this->getReferenceTemperature();
 		std::this_thread::sleep_for(0.5s);
 		internalTemperature = this->getInternalTemperature();
@@ -115,7 +124,7 @@ void airFryer::coolDown(){
 	float externalTemperature =  this->getExternalTemperature();
 	float internalTemperature = this->getInternalTemperature();
 
-	for (; abs(externalTemperature - internalTemperature) > 3 ;){
+	for (; abs(externalTemperature - internalTemperature) > 3 and allOn;){
 		
 		internalTemperature = this->getInternalTemperature();
 
@@ -125,17 +134,19 @@ void airFryer::coolDown(){
 }
 
 void airFryer::bake(){
-
-	bool endRoutine = false;
 	
+	bool endRoutine = false;
+	signal(SIGINT, stopAll);
 	float refTemperature = this->getReferenceTemperature();
 	float intTemperature = this->getInternalTemperature();
 
-	for ( ;endRoutine == false; ){
+	for ( ;endRoutine == false and allOn; ){
 		
 		if (abs(refTemperature - intTemperature) > 1) this->PreHeating();
 
 		endRoutine = this->Baking();
 	}
 	this->coolDown();
+	this->activateFan(0);
+
 }

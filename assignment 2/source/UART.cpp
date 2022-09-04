@@ -92,6 +92,39 @@ unsigned char* uart::buildGetMessage(){
 	return msg;
 }
 
+
+void uart::getUserInput(){
+	this->sendbuffer = buildGetMessage();
+	this->sendbuffer[2] = USER_COMMANDS;
+
+	uint16_t crc = this->computeCrc(this->sendbuffer,7);
+	memcpy(&this->sendbuffer[7],&crc,sizeof(crc));
+
+	this->sendMessage();
+	std::this_thread::sleep_for(0.5s);
+	this->readMessage();
+
+	switch(this->readbuffer[2]) {
+		case CONTROL_SIGNAL:
+			std::cout << "CONTROL_SIGNAL" << std::endl;
+			break;
+		case SYSTEM_STATE:
+			std::cout << "SYSTEM_STATE" << std::endl;
+			break;
+		case TEMP_CONTROL_STATE:
+			std::cout << "TEMP_CONTROL_STATE" << std::endl;
+			break;
+		case ONOFF_STATE:
+			std::cout << "ONOFF_STATE" << std::endl;
+			break;
+		case USER_TIMER:
+			this->userTimer = int(this->data);
+			break;	
+		default:
+			std::cout << "default case" << std::endl;
+	}
+}
+
 void uart::getTemperature(unsigned char WICHTEMPERATURE){
 	this->sendbuffer = buildGetMessage();
 	this->sendbuffer[2] = WICHTEMPERATURE;

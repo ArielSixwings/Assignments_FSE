@@ -30,7 +30,6 @@ private:
 	void moveCursor();
 	void typeln(const char *str);
 	void lcd_toggle_enable(int bits);
-	void SendDatatoPins(int bits, int mode);
 
 public:
 	lcd();

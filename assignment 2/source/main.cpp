@@ -4,11 +4,9 @@
 #include <iostream>
 #include <thread>
 
-
-
 int main(int argc, char const *argv[]){
 	
 	airFryer test;
-	// test.bake();
+	test.bake();
 	return 0;
 }
