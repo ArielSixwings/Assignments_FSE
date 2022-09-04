@@ -67,3 +67,68 @@ void airFryer::PreHeating(){
 		if (percentage < 0) this->activateFan(-1*percentage);
 	}
 }
+
+bool airFryer::Baking(){
+	
+	float percentage;
+	float internalTemperature = 0.0;
+	float referenceTemperature = this->getReferenceTemperature();
+	float initialRefTemp = this->getReferenceTemperature();
+
+	this->timeStart = std::chrono::high_resolution_clock::now();
+	this->timeEnd = std::chrono::high_resolution_clock::now();
+	this->Timer = this->timeEnd - this->timeStart;
+	
+	float useTime = 1.0;
+
+	for (; this->Timer < std::chrono::duration<float>(useTime) ;){
+		
+		referenceTemperature =  this->getReferenceTemperature();
+		std::this_thread::sleep_for(0.5s);
+		internalTemperature = this->getInternalTemperature();
+
+		if (initialRefTemp != referenceTemperature) return false;
+
+		this->presentBaking(float(this->Timer.count()), useTime, referenceTemperature);
+		this->setReferenceTemperature(referenceTemperature);
+		percentage = this->computePID(internalTemperature);
+
+		
+		std::cout <<"percentage: " << percentage << std::endl;
+		
+		if (percentage > 0) this->activateResistence(percentage);
+		if (percentage < 0) this->activateFan(-1*percentage);
+		
+		this->timeEnd = std::chrono::high_resolution_clock::now();
+		this->Timer = this->timeEnd - this->timeStart;
+	}
+	return true;
+}
+
+void airFryer::coolDown(){
+	float externalTemperature =  this->getExternalTemperature();
+	float internalTemperature = this->getInternalTemperature();
+
+	for (; abs(externalTemperature - internalTemperature) > 1 ;){
+		
+		internalTemperature = this->getInternalTemperature();
+
+		this->presentPreHeating(internalTemperature, externalTemperature);
+		this->activateFan(100);
+	}
+}
+
+void airFryer::bake(){
+
+	bool endRoutine = false;
+	
+	float refTemperature = this->getReferenceTemperature();
+	float intTemperature = this->getInternalTemperature();
+
+	for ( ;endRoutine == false; ){
+		
+		if (abs(refTemperature - intTemperature) > 1) this->PreHeating();
+
+		endRoutine = this->Baking();
+	}
+}

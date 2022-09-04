@@ -8,11 +8,12 @@
 #include "UART.h"
 #include "pid.h"
 #include "menu.h"
+#include "bme280Communicate.h"
 
 #define GPIO23 4
 #define GPIO24 5
 
-class airFryer : public uart, public pid, public menu{
+class airFryer : public uart, public pid, public menu, public bme280Communicate{
 
 private:
 	std::chrono::time_point<std::chrono::high_resolution_clock> timeStart;
@@ -21,12 +22,15 @@ private:
 	
 	void activateResistence(int percentage);
 	void activateFan(int percentage);
+	void coolDown();
+	void PreHeating();
+	bool Baking();
 
 public:
-	
 	airFryer();
 	~airFryer();
-	void PreHeating();
+
+	void bake();
 };
 
 #endif //AIRFRYER_H
