@@ -105,7 +105,7 @@ void uart::getUserInput(){
 	std::this_thread::sleep_for(0.5s);
 	this->readMessage(false);
 
-	switch(int(this->intdata)) {
+	switch(this->intdata) {
 		case 5:
 			std::cout << "CASE 5: + time" << std::endl;
 			this->userTimer++;
