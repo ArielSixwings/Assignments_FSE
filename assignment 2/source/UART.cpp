@@ -57,7 +57,7 @@ bool uart::sendMessage(){
 	return true;
 }
 
-bool uart::readMessage(){
+bool uart::readMessage(bool returnType){
 	int count = read(this->uart0_filestream,(void*)this->readbuffer,9);
 
 	if (count < 0){
@@ -75,7 +75,8 @@ bool uart::readMessage(){
 	// for (int i = 0; i < 9; ++i) printf("%d ",this->readbuffer[i]);
 	// std::cout << std::endl;
 	
-	memcpy(&this->data,&this->readbuffer[3],sizeof(float));
+	if(returnType == true) memcpy(&this->data,&this->readbuffer[3],sizeof(float));
+	if(returnType == false) memcpy(&this->intdata,&this->readbuffer[3],sizeof(int));
 	// std::cout << this->data << std::endl;
 
 
@@ -102,9 +103,9 @@ void uart::getUserInput(){
 
 	this->sendMessage();
 	std::this_thread::sleep_for(0.5s);
-	this->readMessage();
+	this->readMessage(false);
 
-	switch(int(this->data)) {
+	switch(int(this->intdata)) {
 		case 5:
 			std::cout << "CASE 5: + time" << std::endl;
 			this->userTimer++;
@@ -128,7 +129,7 @@ void uart::getTemperature(unsigned char WICHTEMPERATURE){
 	
 	this->sendMessage();
 	std::this_thread::sleep_for(0.5s);
-	this->readMessage();
+	this->readMessage(true);
 
 	if (this->compareCrc()) this->getTemperature(WICHTEMPERATURE);
 }

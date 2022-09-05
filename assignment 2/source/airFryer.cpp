@@ -97,7 +97,7 @@ bool airFryer::Baking(){
 		if (this->userTimer){
 			useTime = 60*this->userTimer;
 		} else{
-			useTime = 60;
+			useTime = 60*3;
 		}
 
 

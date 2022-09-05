@@ -51,10 +51,11 @@ private:
 	unsigned char* sendbuffer;
 	
 	float data;
+	int intdata;
 
 	bool compareCrc();
 	bool sendMessage();
-	bool readMessage();
+	bool readMessage(bool returnType);
 	unsigned char* buildGetMessage();
 	void getTemperature(unsigned char WICHTEMPERATURE);
 
